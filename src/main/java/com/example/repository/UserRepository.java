@@ -25,125 +25,104 @@ public class UserRepository extends MainRepository<User> {
     }
 
     /**
-    * Retrieve all users from the JSON file.
-    * */
+     * Retrieves all users from the data source.
+     *
+     * @return A list of all users.
+     */
     public ArrayList<User> getUsers() {
         return findAll();
     }
 
     /**
-    * Fetch a specific user from the JSON file by their unique ID.
-    * @param userId user id
-    * */
+     * Fetches a user by their unique ID.
+     *
+     * @param userId The ID of the user to retrieve.
+     * @return The user object if found, otherwise null.
+     */
     public User getUserById(UUID userId) {
-        ArrayList<User> users = findAll();
-        boolean found = false;
-
-        for (User user : users) {
+        for (User user : findAll()) {
             if (user.getId().equals(userId)) {
                 System.out.println("User found successfully");
                 return user;
             }
         }
-
         System.out.println("User does not exist");
         return null;
     }
 
     /**
-     * Adds a new user to the users JSON file.
-     * @param user
-     * */
+     * Adds a new user to the system if they do not already exist.
+     *
+     * @param user The user to be added.
+     * @return The added user.
+     */
     public User addUser(User user) {
         if (getUserById(user.getId()) != null) {
             System.out.println("User already exists");
-        }
-        else {
+        } else {
             save(user);
             System.out.println("New user created successfully");
         }
-
         return user;
     }
 
     /**
-     * Retrieve all orders for a given user ID.
-     * */
+     * Retrieves all orders placed by a specific user.
+     *
+     * @param userId The ID of the user.
+     * @return A list of orders belonging to the user, or an empty list if none exist.
+     */
     public List<Order> getOrdersByUserId(UUID userId) {
         User user = getUserById(userId);
-        return user.getOrders();
+        return (user != null) ? user.getOrders() : new ArrayList<>();
     }
 
     /**
-     * Lets the User add order.
-     * */
+     * Adds a new order to a user's order list.
+     *
+     * @param userId The ID of the user.
+     * @param order  The order to be added.
+     */
     public void addOrderToUser(UUID userId, Order order) {
         List<Order> orders = getOrdersByUserId(userId);
 
-        boolean found = false;
-
-        for (Order o : orders) {
-            if (o.getId().equals(order.getId())) {
-                found = true;
-            }
-        }
-
-        if (found) {
+        if (orders.stream().anyMatch(o -> o.getId().equals(order.getId()))) {
             System.out.println("Order already exists");
-        }
-        else {
+        } else {
             orders.add(order);
             System.out.println("Order added successfully");
         }
     }
 
     /**
-     * Let the user remove one of his/her orders.
-     * */
+     * Removes a specific order from a user's order list.
+     *
+     * @param userId  The ID of the user.
+     * @param orderId The ID of the order to be removed.
+     */
     public void removeOrderFromUser(UUID userId, UUID orderId) {
         List<Order> orders = getOrdersByUserId(userId);
 
-        boolean found = false;
-
-        for (Order o : orders) {
-            if (o.getId().equals(orderId)) {
-                orders.remove(o);
-                found = true;
-            }
-        }
-
-        if (!found) {
-            System.out.println("Order does not exist");
-        }
-        else {
+        if (orders.removeIf(order -> order.getId().equals(orderId))) {
             System.out.println("Order deleted successfully");
+        } else {
+            System.out.println("Order does not exist");
         }
     }
 
     /**
-     * Delete a user by passing his/her ID.
-     * */
+     * Deletes a user from the system.
+     *
+     * @param userId The ID of the user to be deleted.
+     */
     public void deleteUserById(UUID userId) {
         ArrayList<User> users = findAll();
-        boolean found = false;
 
-        for (User user : users) {
-            if (user.getId().equals(userId)) {
-                users.remove(user);
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            System.out.println("User does not exist");
-        }
-        else {
+        if (users.removeIf(user -> user.getId().equals(userId))) {
             overrideData(users);
             System.out.println("User deleted successfully");
+        } else {
+            System.out.println("User does not exist");
         }
     }
-
-
-
 }

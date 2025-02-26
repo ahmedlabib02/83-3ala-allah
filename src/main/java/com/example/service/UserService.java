@@ -16,92 +16,114 @@ import java.util.UUID;
 @SuppressWarnings("rawtypes")
 public class UserService extends MainService<User> {
 
-    UserRepository userRepository;
-    CartService cartService;
+    private final UserRepository userRepository;
+    private final CartService cartService;
+    private final OrderService orderService;
+    private final ProductService productService;
 
     @Autowired
-    public UserService(UserRepository userRepository, CartService cartService) {
+    public UserService(UserRepository userRepository, CartService cartService, OrderService orderService, ProductService productService) {
         this.userRepository = userRepository;
         this.cartService = cartService;
+        this.orderService = orderService;
+        this.productService = productService;
     }
 
     /**
-     * To add a new User to our system
-     * */
+     * Adds a new user to the system.
+     *
+     * @param user The user to be added.
+     * @return The created user.
+     */
     public User addUser(User user) {
         return userRepository.addUser(user);
     }
 
     /**
-     * To get all the Users present in our system.
-     * */
+     * Retrieves all users in the system.
+     *
+     * @return A list of all users.
+     */
     public ArrayList<User> getUsers() {
         return userRepository.getUsers();
     }
 
     /**
-     * To get a specific user by passing his/her ID.
-     * */
+     * Retrieves a user by their unique identifier.
+     *
+     * @param userId The ID of the user.
+     * @return The user object if found.
+     */
     public User getUserById(UUID userId) {
         return userRepository.getUserById(userId);
     }
 
     /**
-     * To get all the orders that were created by the user.
-     * It takes the user ID as an input
-     * */
+     * Retrieves all orders associated with a given user.
+     *
+     * @param userId The ID of the user.
+     * @return A list of orders placed by the user.
+     */
     public List<Order> getOrdersByUserById(UUID userId) {
         return userRepository.getOrdersByUserId(userId);
     }
 
     /**
-     * The user checks out his cart by creating a new order. The user should empty
-     * his cart and calculate everything to his order and add the new orders.
-     * It should call methods from CartService.
-     * */
+     * Creates a new order for a user by checking out their cart.
+     * The order total is calculated based on the products in the cart.
+     * The user's cart is emptied after checkout.
+     *
+     * @param userId The ID of the user checking out.
+     */
     public void addOrderToUser(UUID userId) {
         Cart cart = cartService.getCartByUserId(userId);
-        Order order = new Order();
-        double totalCost = 0;
-
-        ArrayList<Product> products = new ArrayList<>(cart.getProducts());
-
-        // Calculate the total cost of the order
-        for (Product product : products) {
-            totalCost += product.getPrice();
+        if (cart == null || cart.getProducts().isEmpty()) {
+            throw new IllegalStateException("Cart is empty or does not exist.");
         }
 
+        double totalCost = cart.getProducts().stream()
+                .mapToDouble(Product::getPrice)
+                .sum();
+
+        Order order = new Order();
+        order.setUserId(userId);
         order.setTotalPrice(totalCost);
 
-        // Empty the cart
-        this.emptyCart(userId);
+        // Empty the cart after creating an order
+        emptyCart(userId);
 
-        // Add the new order
         userRepository.addOrderToUser(userId, order);
     }
 
     /**
-     * This method should empty the cart of the user from the products
-     * present inside. It should call methods from CartService.
-     * */
+     * Empties the cart of a user by removing all products.
+     *
+     * @param userId The ID of the user whose cart should be emptied.
+     */
     public void emptyCart(UUID userId) {
         Cart cart = cartService.getCartByUserId(userId);
-        cart.setProducts(new ArrayList<Product>());
+        if (cart != null) {
+            cart.getProducts().forEach(product -> productService.deleteProductById(product.getId()));
+            cart.setProducts(new ArrayList<>());
+        }
     }
 
-
     /**
-     * To remove a specific order from the list of orders of the user.
-     * */
+     * Removes a specific order from a user's order history.
+     *
+     * @param userId  The ID of the user.
+     * @param orderId The ID of the order to be removed.
+     */
     public void removeOrderFromUser(UUID userId, UUID orderId) {
         userRepository.removeOrderFromUser(userId, orderId);
     }
 
     /**
-     * To delete a specific user by passing his ID.
-     * */
+     * Deletes a user from the system by their ID.
+     *
+     * @param userId The ID of the user to be deleted.
+     */
     public void deleteUserById(UUID userId) {
         userRepository.deleteUserById(userId);
     }
-
 }
