@@ -1,6 +1,8 @@
 package com.example.service;
 
+import com.example.model.Cart;
 import com.example.model.Order;
+import com.example.model.Product;
 import com.example.model.User;
 import com.example.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +16,13 @@ import java.util.UUID;
 @SuppressWarnings("rawtypes")
 public class UserService extends MainService<User> {
 
-    private final User user;
     UserRepository userRepository;
+    CartService cartService;
 
     @Autowired
-    public UserService(UserRepository userRepository, User user) {
-        this.user = user;
+    public UserService(UserRepository userRepository, CartService cartService) {
+        this.userRepository = userRepository;
+        this.cartService = cartService;
     }
 
     /**
@@ -57,7 +60,24 @@ public class UserService extends MainService<User> {
      * It should call methods from CartService.
      * */
     public void addOrderToUser(UUID userId) {
+        Cart cart = cartService.getCartByUserId(userId);
+        Order order = new Order();
+        double totalCost = 0;
 
+        ArrayList<Product> products = new ArrayList<>(cart.getProducts());
+
+        // Calculate the total cost of the order
+        for (Product product : products) {
+            totalCost += product.getPrice();
+        }
+
+        order.setTotalPrice(totalCost);
+
+        // Empty the cart
+        this.emptyCart(userId);
+
+        // Add the new order
+        userRepository.addOrderToUser(userId, order);
     }
 
     /**
@@ -65,7 +85,8 @@ public class UserService extends MainService<User> {
      * present inside. It should call methods from CartService.
      * */
     public void emptyCart(UUID userId) {
-
+        Cart cart = cartService.getCartByUserId(userId);
+        cart.setProducts(new ArrayList<Product>());
     }
 
 

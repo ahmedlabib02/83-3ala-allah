@@ -1,9 +1,13 @@
 package com.example.controller;
 
 import com.example.model.Order;
+import com.example.model.Product;
 import com.example.model.User;
+import com.example.service.CartService;
+import com.example.service.ProductService;
 import com.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -14,13 +18,13 @@ import java.util.UUID;
 @RequestMapping("/user")
 public class UserController {
 
-    private final User user;
     UserService userService;
+    CartService cartService;
+    ProductService productService;
 
     @Autowired
-    public UserController(UserService userService, User user) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.user = user;
     }
 
     /**
@@ -61,7 +65,7 @@ public class UserController {
     @PostMapping("/{userId}/checkout")
     public String addOrderToUser(@PathVariable UUID userId) {
         userService.addOrderToUser(userId);
-        return ""; // what to return?
+        return HttpStatus.OK.toString();
     }
 
     /**
@@ -70,7 +74,7 @@ public class UserController {
     @PostMapping("/{userId}/removeOrder")
     public String removeOrderFromUser(@PathVariable UUID userId, @RequestParam UUID orderId) {
         userService.removeOrderFromUser(userId, orderId);
-        return ""; // what to return?
+        return HttpStatus.OK.toString();
     }
 
     /**
@@ -79,7 +83,7 @@ public class UserController {
     @DeleteMapping("/{userId}/emptyCart")
     public String emptyCart(@PathVariable UUID userId) {
         userService.emptyCart(userId);
-        return "";
+        return HttpStatus.OK.toString();
     }
 
     /**
@@ -87,8 +91,9 @@ public class UserController {
      * */
     @PostMapping("/addProductToCart")
     public String addProductToCart(@RequestParam UUID userId, @RequestParam UUID productId) {
-        // TODO
-        return "";
+        Product product = productService.getProductById(productId);
+        cartService.addProductToCart(userId, product);
+        return HttpStatus.OK.toString();
     }
 
     /**
@@ -96,7 +101,9 @@ public class UserController {
      * */
     @PutMapping("/deleteProductFromCart")
     public String deleteProductFromCart(@RequestParam UUID userId, @RequestParam UUID productId) {
-        return null;
+        Product product = productService.getProductById(productId);
+        cartService.deleteProductFromCart(userId, product);
+        return HttpStatus.OK.toString();
     }
 
     /**
@@ -105,6 +112,6 @@ public class UserController {
     @DeleteMapping("/delete/{userId}")
     public String deleteUserById(@PathVariable UUID userId) {
         userService.deleteUserById(userId);
-        return ""; // what to return?
+        return HttpStatus.OK.toString();
     }
 }
