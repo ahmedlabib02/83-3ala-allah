@@ -10,6 +10,8 @@ public class Product {
     private String name;
     private double price;
 
+
+
     public UUID getId() {
         return id;
     }

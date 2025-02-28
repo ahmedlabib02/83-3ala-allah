@@ -18,14 +18,12 @@ public class UserService extends MainService<User> {
 
     private final UserRepository userRepository;
     private final CartService cartService;
-    private final OrderService orderService;
     private final ProductService productService;
 
     @Autowired
-    public UserService(UserRepository userRepository, CartService cartService, OrderService orderService, ProductService productService) {
+    public UserService(UserRepository userRepository, CartService cartService, ProductService productService) {
         this.userRepository = userRepository;
         this.cartService = cartService;
-        this.orderService = orderService;
         this.productService = productService;
     }
 
