@@ -25,6 +25,8 @@ public class CartRepository extends MainRepository<Cart> {
     }
 
     public Cart addCart(Cart cart){
+        if(cart==null)
+            return null;
         save(cart);
         return cart;
     }

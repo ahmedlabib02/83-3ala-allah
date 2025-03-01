@@ -2,21 +2,15 @@ package com.example.model;
 
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Component
-public class Product {
+public class User {
     private UUID id;
     private String name;
-    private double price;
-
-    public Product() {}
-
-    public Product(UUID id, String name, double price) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-    }
+    private List<Order> orders = new ArrayList<>();
 
     public UUID getId() {
         return id;
@@ -34,11 +28,11 @@ public class Product {
         this.name = name;
     }
 
-    public double getPrice() {
-        return price;
+    public List<Order> getOrders() {
+        return orders;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }
