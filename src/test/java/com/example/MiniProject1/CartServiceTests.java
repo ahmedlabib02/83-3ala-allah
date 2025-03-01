@@ -51,7 +51,11 @@ public class CartServiceTests {
     public void testAddCart_HappyPath() {
         UUID cartId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
-        Cart cart = new Cart(cartId, userId, new ArrayList<>());
+        Cart cart = new Cart();
+        cart.setId(cartId);
+        cart.setUserId(userId);
+        cart.setProducts(new ArrayList<>());
+
         Cart returnedCart = cartService.addCart(cart);
 
         assertNotNull(returnedCart, "Cart should not be null after addition");
@@ -78,11 +82,18 @@ public class CartServiceTests {
         // Since duplicates are not handled, adding two carts with the same ID should create two entries.
         UUID cartId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
-        Cart cart = new Cart(cartId, userId, new ArrayList<>());
-        cartService.addCart(cart);
 
-        Cart duplicate = new Cart(cartId, userId, new ArrayList<>());
-        cartService.addCart(duplicate);
+        Cart cart1 = new Cart();
+        cart1.setId(cartId);
+        cart1.setUserId(userId);
+        cart1.setProducts(new ArrayList<>());
+        cartService.addCart(cart1);
+
+        Cart cart2 = new Cart();
+        cart2.setId(cartId);
+        cart2.setUserId(userId);
+        cart2.setProducts(new ArrayList<>());
+        cartService.addCart(cart2);
 
         try {
             Cart[] carts = objectMapper.readValue(new File(cartDataPath), Cart[].class);
@@ -117,8 +128,16 @@ public class CartServiceTests {
 
     @Test
     public void testGetCarts_HappyPath() {
-        Cart cart1 = new Cart(UUID.randomUUID(), UUID.randomUUID(), new ArrayList<>());
-        Cart cart2 = new Cart(UUID.randomUUID(), UUID.randomUUID(), new ArrayList<>());
+        Cart cart1 = new Cart();
+        cart1.setId(UUID.randomUUID());
+        cart1.setUserId(UUID.randomUUID());
+        cart1.setProducts(new ArrayList<>());
+
+        Cart cart2 = new Cart();
+        cart2.setId(UUID.randomUUID());
+        cart2.setUserId(UUID.randomUUID());
+        cart2.setProducts(new ArrayList<>());
+
         cartService.addCart(cart1);
         cartService.addCart(cart2);
 
@@ -134,7 +153,10 @@ public class CartServiceTests {
 
     @Test
     public void testGetCarts_AfterDeletion() {
-        Cart cart = new Cart(UUID.randomUUID(), UUID.randomUUID(), new ArrayList<>());
+        Cart cart = new Cart();
+        cart.setId(UUID.randomUUID());
+        cart.setUserId(UUID.randomUUID());
+        cart.setProducts(new ArrayList<>());
         cartService.addCart(cart);
         cartService.deleteCartById(cart.getId());
 
@@ -149,7 +171,10 @@ public class CartServiceTests {
     @Test
     public void testGetCartById_HappyPath() {
         UUID cartId = UUID.randomUUID();
-        Cart cart = new Cart(cartId, UUID.randomUUID(), new ArrayList<>());
+        Cart cart = new Cart();
+        cart.setId(cartId);
+        cart.setUserId(UUID.randomUUID());
+        cart.setProducts(new ArrayList<>());
         cartService.addCart(cart);
 
         Cart retrieved = cartService.getCartById(cartId);
@@ -166,7 +191,10 @@ public class CartServiceTests {
     @Test
     public void testGetCartById_AfterDeletion() {
         UUID cartId = UUID.randomUUID();
-        Cart cart = new Cart(cartId, UUID.randomUUID(), new ArrayList<>());
+        Cart cart = new Cart();
+        cart.setId(cartId);
+        cart.setUserId(UUID.randomUUID());
+        cart.setProducts(new ArrayList<>());
         cartService.addCart(cart);
         cartService.deleteCartById(cartId);
 
@@ -181,7 +209,10 @@ public class CartServiceTests {
     @Test
     public void testGetCartByUserId_HappyPath() {
         UUID userId = UUID.randomUUID();
-        Cart cart = new Cart(UUID.randomUUID(), userId, new ArrayList<>());
+        Cart cart = new Cart();
+        cart.setId(UUID.randomUUID());
+        cart.setUserId(userId);
+        cart.setProducts(new ArrayList<>());
         cartService.addCart(cart);
 
         Cart retrieved = cartService.getCartByUserId(userId);
@@ -198,8 +229,16 @@ public class CartServiceTests {
     @Test
     public void testGetCartByUserId_MultipleCarts() {
         UUID userId = UUID.randomUUID();
-        Cart cart1 = new Cart(UUID.randomUUID(), userId, new ArrayList<>());
-        Cart cart2 = new Cart(UUID.randomUUID(), userId, new ArrayList<>());
+        Cart cart1 = new Cart();
+        cart1.setId(UUID.randomUUID());
+        cart1.setUserId(userId);
+        cart1.setProducts(new ArrayList<>());
+
+        Cart cart2 = new Cart();
+        cart2.setId(UUID.randomUUID());
+        cart2.setUserId(userId);
+        cart2.setProducts(new ArrayList<>());
+
         cartService.addCart(cart1);
         cartService.addCart(cart2);
 
@@ -216,7 +255,10 @@ public class CartServiceTests {
     @Test
     public void testAddProductToCart_HappyPath() {
         UUID cartId = UUID.randomUUID();
-        Cart cart = new Cart(cartId, UUID.randomUUID(), new ArrayList<>());
+        Cart cart = new Cart();
+        cart.setId(cartId);
+        cart.setUserId(UUID.randomUUID());
+        cart.setProducts(new ArrayList<>());
         cartService.addCart(cart);
 
         Product product = new Product(UUID.randomUUID(), "Test Product", 15.0);
@@ -230,7 +272,7 @@ public class CartServiceTests {
 
     @Test
     public void testAddProductToCart_NonExistentCart() {
-        // Since exceptions aren't used, adding a product to a non-existent cart should simply do nothing.
+        // Since exceptions aren't used, adding a product to a non-existent cart should do nothing.
         Product product = new Product(UUID.randomUUID(), "Test Product", 15.0);
         cartService.addProductToCart(UUID.randomUUID(), product);
         // Verify that the JSON file remains unchanged (i.e. empty)
@@ -245,7 +287,10 @@ public class CartServiceTests {
     @Test
     public void testAddProductToCart_MultipleProducts() {
         UUID cartId = UUID.randomUUID();
-        Cart cart = new Cart(cartId, UUID.randomUUID(), new ArrayList<>());
+        Cart cart = new Cart();
+        cart.setId(cartId);
+        cart.setUserId(UUID.randomUUID());
+        cart.setProducts(new ArrayList<>());
         cartService.addCart(cart);
 
         Product product1 = new Product(UUID.randomUUID(), "Product 1", 10.0);
@@ -268,7 +313,10 @@ public class CartServiceTests {
         Product product = new Product(UUID.randomUUID(), "Test Product", 15.0);
         ArrayList<Product> products = new ArrayList<>();
         products.add(product);
-        Cart cart = new Cart(cartId, UUID.randomUUID(), products);
+        Cart cart = new Cart();
+        cart.setId(cartId);
+        cart.setUserId(UUID.randomUUID());
+        cart.setProducts(products);
         cartService.addCart(cart);
 
         cartService.deleteProductFromCart(cartId, product);
@@ -280,7 +328,10 @@ public class CartServiceTests {
     @Test
     public void testDeleteProductFromCart_ProductNotPresent() {
         UUID cartId = UUID.randomUUID();
-        Cart cart = new Cart(cartId, UUID.randomUUID(), new ArrayList<>());
+        Cart cart = new Cart();
+        cart.setId(cartId);
+        cart.setUserId(UUID.randomUUID());
+        cart.setProducts(new ArrayList<>());
         cartService.addCart(cart);
 
         // Create a product that was never added.
@@ -311,7 +362,10 @@ public class CartServiceTests {
     @Test
     public void testDeleteCartById_HappyPath() {
         UUID cartId = UUID.randomUUID();
-        Cart cart = new Cart(cartId, UUID.randomUUID(), new ArrayList<>());
+        Cart cart = new Cart();
+        cart.setId(cartId);
+        cart.setUserId(UUID.randomUUID());
+        cart.setProducts(new ArrayList<>());
         cartService.addCart(cart);
         cartService.deleteCartById(cartId);
 
@@ -333,8 +387,16 @@ public class CartServiceTests {
 
     @Test
     public void testDeleteCartById_MultipleCarts() {
-        Cart cart1 = new Cart(UUID.randomUUID(), UUID.randomUUID(), new ArrayList<>());
-        Cart cart2 = new Cart(UUID.randomUUID(), UUID.randomUUID(), new ArrayList<>());
+        Cart cart1 = new Cart();
+        cart1.setId(UUID.randomUUID());
+        cart1.setUserId(UUID.randomUUID());
+        cart1.setProducts(new ArrayList<>());
+
+        Cart cart2 = new Cart();
+        cart2.setId(UUID.randomUUID());
+        cart2.setUserId(UUID.randomUUID());
+        cart2.setProducts(new ArrayList<>());
+
         cartService.addCart(cart1);
         cartService.addCart(cart2);
 

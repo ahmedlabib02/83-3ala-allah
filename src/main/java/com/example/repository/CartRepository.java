@@ -9,38 +9,69 @@ import java.util.UUID;
 
 @Repository
 @SuppressWarnings("rawtypes")
-public class CartRepository {
+public class CartRepository extends MainRepository<Cart> {
 
-    public CartRepository() {
-
+    public CartRepository(){
     }
 
-    public Cart addCart(Cart cart) {
-        return null;
+    @Override
+    protected String getDataPath() {
+        return "src/main/java/com/example/data/carts.json";
     }
 
-    public ArrayList<Cart> getCarts() {
-        return null;
+    @Override
+    protected Class getArrayType() {
+        return Cart[].class;
     }
 
-    public Cart getCartById(UUID cartId) {
-        return null;
+    public Cart addCart(Cart cart){
+        save(cart);
+        return cart;
     }
 
-    public Cart getCartByUserId(UUID userId) {
-        return null;
+    public ArrayList<Cart> getCarts(){
+        return findAll();
     }
 
-    public void addProductToCart(UUID cartId, Product product) {
-
+    public Cart getCartById(UUID cartId){
+        return findAll().stream()
+                .filter(cart -> cart.getId().equals(cartId))
+                .findFirst()
+                .orElse(null);
     }
 
-    public void deleteProductFromCart(UUID cartId, Product product) {
-
+    public Cart getCartByUserId(UUID userId){
+        return findAll().stream()
+                .filter(cart -> cart.getUserId().equals(userId))
+                .findFirst()
+                .orElse(null);
     }
 
-    public void deleteCartById(UUID cartId) {
-
+    public void addProductToCart(UUID cartId, Product product){
+        Cart cart = getCartById(cartId);
+        cart.getProducts().add(product);
+        save(cart);
     }
+
+    public void deleteProductFromCart(UUID cartId, Product product){
+        Cart cart = getCartById(cartId);
+        cart.getProducts().remove(product);
+        save(cart);
+    }
+
+    public void deleteCartById(UUID cartId){
+        ArrayList<Cart> carts = getCarts();
+        carts.removeIf(cart -> cart.getId().equals(cartId));
+        overrideData(carts);
+    }
+
+    public void updateProductQuantity() {
+        System.out.println("Product quantity updated");
+    }
+
+    public void getCartDetails() {
+        System.out.println("Cart details fetched");
+    }
+
 
 }
