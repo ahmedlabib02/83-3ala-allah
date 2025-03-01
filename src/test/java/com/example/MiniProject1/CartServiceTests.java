@@ -122,9 +122,9 @@ public class CartServiceTests {
         }
     }
 
-    // ============================================================
-    // Tests for getCarts() method (3 tests)
-    // ============================================================
+//     ============================================================
+//     Tests for getCarts() method (3 tests)
+//     ============================================================
 
     @Test
     public void testGetCarts_HappyPath() {
@@ -164,9 +164,9 @@ public class CartServiceTests {
         assertTrue(carts.isEmpty(), "Cart list should be empty after deletion");
     }
 
-    // ============================================================
-    // Tests for getCartById() method (3 tests)
-    // ============================================================
+//     ============================================================
+//     Tests for getCartById() method (3 tests)
+//     ============================================================
 
     @Test
     public void testGetCartById_HappyPath() {
@@ -202,9 +202,9 @@ public class CartServiceTests {
         assertNull(retrieved, "Cart should not be retrievable after deletion");
     }
 
-    // ============================================================
-    // Tests for getCartByUserId() method (3 tests)
-    // ============================================================
+//     ============================================================
+//     Tests for getCartByUserId() method (3 tests)
+//     ============================================================
 
     @Test
     public void testGetCartByUserId_HappyPath() {
@@ -303,9 +303,9 @@ public class CartServiceTests {
         assertEquals(2, updatedCart.getProducts().size(), "Cart should have 2 products added");
     }
 
-    // ============================================================
-    // Tests for deleteProductFromCart() method (3 tests)
-    // ============================================================
+//     ============================================================
+//     Tests for deleteProductFromCart() method (3 tests)
+//     ============================================================
 
     @Test
     public void testDeleteProductFromCart_HappyPath() {

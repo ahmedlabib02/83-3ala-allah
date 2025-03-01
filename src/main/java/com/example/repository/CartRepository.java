@@ -25,6 +25,8 @@ public class CartRepository extends MainRepository<Cart> {
     }
 
     public Cart addCart(Cart cart){
+        if(cart==null)
+            return null;
         save(cart);
         return cart;
     }
@@ -49,14 +51,21 @@ public class CartRepository extends MainRepository<Cart> {
 
     public void addProductToCart(UUID cartId, Product product){
         Cart cart = getCartById(cartId);
-        cart.getProducts().add(product);
-        save(cart);
+        if(cart!=null)
+        {
+            cart.getProducts().add(product);
+            save(cart);
+        }
+
     }
 
     public void deleteProductFromCart(UUID cartId, Product product){
         Cart cart = getCartById(cartId);
-        cart.getProducts().remove(product);
-        save(cart);
+        if(cart!=null)
+        {
+            cart.getProducts().remove(product);
+            save(cart);
+        }
     }
 
     public void deleteCartById(UUID cartId){
