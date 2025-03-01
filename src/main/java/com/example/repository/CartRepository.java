@@ -47,17 +47,37 @@ public class CartRepository extends MainRepository<Cart> {
                 .orElse(null);
     }
 
-    public void addProductToCart(UUID cartId, Product product){
-        Cart cart = getCartById(cartId);
-        cart.getProducts().add(product);
-        save(cart);
+    public void addProductToCart(UUID cartId, Product product) {
+        ArrayList<Cart> carts = findAll();
+
+        for (int i = 0; i < carts.size(); i++) {
+            Cart cart = carts.get(i);
+            if (cart.getId().equals(cartId)) {
+                cart.getProducts().add(product);
+                carts.set(i, cart);
+                break;
+            }
+        }
+
+        overrideData(carts);
     }
 
-    public void deleteProductFromCart(UUID cartId, Product product){
-        Cart cart = getCartById(cartId);
-        cart.getProducts().remove(product);
-        save(cart);
+
+    public void deleteProductFromCart(UUID cartId, Product product) {
+        ArrayList<Cart> carts = findAll();
+
+        for (int i = 0; i < carts.size(); i++) {
+            Cart cart = carts.get(i);
+            if (cart.getId().equals(cartId)) {
+                cart.getProducts().removeIf(p -> p.getId().equals(product.getId()));
+                carts.set(i, cart);
+                break;
+            }
+        }
+
+        overrideData(carts);
     }
+
 
     public void deleteCartById(UUID cartId){
         ArrayList<Cart> carts = getCarts();
