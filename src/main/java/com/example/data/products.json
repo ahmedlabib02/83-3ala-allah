@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "id": "f5094e14-39a7-4cbe-b3ab-c9798fcedad0",
+    "name": "Laptop",
+    "price": 1200.00
+  },
+  {
+    "id": "3f34bc45-12d5-4e3c-822d-75e123456abc",
+    "name": "Smartphone",
+    "price": 699.99
+  },
+  {
+    "id": "7c89dfba-46ea-4f18-9a5c-90a987654xyz",
+    "name": "Tablet",
+    "price": 499.99
+  }
+]
