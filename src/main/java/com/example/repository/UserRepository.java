@@ -2,6 +2,7 @@ package com.example.repository;
 
 import com.example.model.Order;
 import com.example.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -11,6 +12,9 @@ import java.util.UUID;
 @Repository
 @SuppressWarnings("rawtypes")
 public class UserRepository extends MainRepository<User> {
+
+    @Autowired
+    OrderRepository orderRepository;
 
     public UserRepository() {}
 
@@ -89,7 +93,23 @@ public class UserRepository extends MainRepository<User> {
         if (orders.stream().anyMatch(o -> o.getId().equals(order.getId()))) {
             System.out.println("Order already exists");
         } else {
+            // Add order to the database
             orders.add(order);
+
+            // Update user database
+            ArrayList<User> users = getUsers();
+
+            // Iterate over the list of users & Update the order list of specified user id
+            for (User user : users) {
+                if (user.getId().equals(userId)) {
+                    user.setOrders(orders);
+                    break;
+                }
+            }
+
+            // Update the JSON file
+            overrideData(users);
+
             System.out.println("Order added successfully");
         }
     }
@@ -104,6 +124,20 @@ public class UserRepository extends MainRepository<User> {
         List<Order> orders = getOrdersByUserId(userId);
 
         if (orders.removeIf(order -> order.getId().equals(orderId))) {
+            // Get the list of users
+            ArrayList<User> users = getUsers();
+
+            // Iterate over the list of users & Update the order list of specified user id
+            for (User user : users) {
+                if (user.getId().equals(userId)) {
+                    user.setOrders(orders);
+                    break;
+                }
+            }
+
+            // Update the JSON file
+            overrideData(users);
+
             System.out.println("Order deleted successfully");
         } else {
             System.out.println("Order does not exist");
