@@ -1,5 +1,7 @@
 //package com.example.MiniProject1;
 //
+//
+//
 //import java.io.File;
 //import java.io.IOException;
 //import java.util.ArrayList;
@@ -10,29 +12,21 @@
 //import org.junit.jupiter.api.Test;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 //import org.springframework.context.annotation.ComponentScan;
-//import org.springframework.test.web.servlet.MockMvc;
+//import org.springframework.boot.test.context.SpringBootTest;
 //
 //import com.example.model.Cart;
 //import com.example.model.Order;
 //import com.example.model.Product;
 //import com.example.model.User;
-//import com.example.repository.CartRepository;
-//import com.example.repository.OrderRepository;
-//import com.example.repository.ProductRepository;
-//import com.example.repository.UserRepository;
-//import com.example.service.CartService;
-//import com.example.service.OrderService;
-//import com.example.service.ProductService;
 //import com.example.service.UserService;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //
 //import static org.junit.jupiter.api.Assertions.*;
 //
 //@ComponentScan(basePackages = "com.example.*")
-//@WebMvcTest
-//class UserServiceTests {
+//@SpringBootTest
+//public class UserServiceTests {
 //
 //    @Value("${spring.application.userDataPath}")
 //    private String userDataPath;
@@ -47,36 +41,15 @@
 //    private String cartDataPath;
 //
 //    @Autowired
-//    private MockMvc mockMvc;
-//
-//    @Autowired
 //    private ObjectMapper objectMapper;
 //
 //    @Autowired
 //    private UserService userService;
 //
-//    @Autowired
-//    private CartService cartService;
+//    // ------------------ Helper Methods Provided ------------------
 //
-//    @Autowired
-//    private ProductService productService;
-//
-//    @Autowired
-//    private OrderService orderService;
-//    @Autowired
-//    private UserRepository userRepository;
-//
-//    @Autowired
-//    private CartRepository cartRepository;
-//
-//    @Autowired
-//    private ProductRepository productRepository;
-//
-//    @Autowired
-//    private OrderRepository orderRepository;
-//
-//    public void overRideAll(){
-//        try{
+//    public void overRideAll() {
+//        try {
 //            objectMapper.writeValue(new File(userDataPath), new ArrayList<User>());
 //            objectMapper.writeValue(new File(productDataPath), new ArrayList<Product>());
 //            objectMapper.writeValue(new File(orderDataPath), new ArrayList<Order>());
@@ -86,37 +59,36 @@
 //        }
 //    }
 //
-//    public Object find(String typeString, Object toFind){
-//        switch(typeString){
+//    public Object find(String typeString, Object toFind) {
+//        switch (typeString) {
 //            case "User":
 //                ArrayList<User> users = getUsers();
-//
-//                for(User user: users){
-//                    if(user.getId().equals(((User)toFind).getId())){
+//                for (User user : users) {
+//                    if (user.getId().equals(((User) toFind).getId())) {
 //                        return user;
 //                    }
 //                }
 //                break;
 //            case "Product":
 //                ArrayList<Product> products = getProducts();
-//                for(Product product: products){
-//                    if(product.getId().equals(((Product)toFind).getId())){
+//                for (Product product : products) {
+//                    if (product.getId().equals(((Product) toFind).getId())) {
 //                        return product;
 //                    }
 //                }
 //                break;
 //            case "Order":
 //                ArrayList<Order> orders = getOrders();
-//                for(Order order: orders){
-//                    if(order.getId().equals(((Order)toFind).getId())){
+//                for (Order order : orders) {
+//                    if (order.getId().equals(((Order) toFind).getId())) {
 //                        return order;
 //                    }
 //                }
 //                break;
 //            case "Cart":
 //                ArrayList<Cart> carts = getCarts();
-//                for(Cart cart: carts){
-//                    if(cart.getId().equals(((Cart)toFind).getId())){
+//                for (Cart cart : carts) {
+//                    if (cart.getId().equals(((Cart) toFind).getId())) {
 //                        return cart;
 //                    }
 //                }
@@ -131,8 +103,7 @@
 //            ArrayList<Product> products;
 //            if (!file.exists()) {
 //                products = new ArrayList<>();
-//            }
-//            else {
+//            } else {
 //                products = new ArrayList<>(Arrays.asList(objectMapper.readValue(file, Product[].class)));
 //            }
 //            products.add(product);
@@ -149,7 +120,7 @@
 //            if (!file.exists()) {
 //                return new ArrayList<>();
 //            }
-//            return new ArrayList<Product>(Arrays.asList(objectMapper.readValue(file, Product[].class)));
+//            return new ArrayList<>(Arrays.asList(objectMapper.readValue(file, Product[].class)));
 //        } catch (IOException e) {
 //            throw new RuntimeException("Failed to read from JSON file", e);
 //        }
@@ -161,8 +132,7 @@
 //            ArrayList<User> users;
 //            if (!file.exists()) {
 //                users = new ArrayList<>();
-//            }
-//            else {
+//            } else {
 //                users = new ArrayList<>(Arrays.asList(objectMapper.readValue(file, User[].class)));
 //            }
 //            users.add(user);
@@ -179,20 +149,19 @@
 //            if (!file.exists()) {
 //                return new ArrayList<>();
 //            }
-//            return new ArrayList<User>(Arrays.asList(objectMapper.readValue(file, User[].class)));
+//            return new ArrayList<>(Arrays.asList(objectMapper.readValue(file, User[].class)));
 //        } catch (IOException e) {
 //            throw new RuntimeException("Failed to read from JSON file", e);
 //        }
 //    }
 //
-//    public Cart addCart(Cart cart){
-//        try{
+//    public Cart addCart(Cart cart) {
+//        try {
 //            File file = new File(cartDataPath);
 //            ArrayList<Cart> carts;
 //            if (!file.exists()) {
 //                carts = new ArrayList<>();
-//            }
-//            else {
+//            } else {
 //                carts = new ArrayList<>(Arrays.asList(objectMapper.readValue(file, Cart[].class)));
 //            }
 //            carts.add(cart);
@@ -209,20 +178,19 @@
 //            if (!file.exists()) {
 //                return new ArrayList<>();
 //            }
-//            return new ArrayList<Cart>(Arrays.asList(objectMapper.readValue(file, Cart[].class)));
+//            return new ArrayList<>(Arrays.asList(objectMapper.readValue(file, Cart[].class)));
 //        } catch (IOException e) {
 //            throw new RuntimeException("Failed to read from JSON file", e);
 //        }
 //    }
 //
-//    public Order addOrder(Order order){
-//        try{
+//    public Order addOrder(Order order) {
+//        try {
 //            File file = new File(orderDataPath);
 //            ArrayList<Order> orders;
 //            if (!file.exists()) {
 //                orders = new ArrayList<>();
-//            }
-//            else {
+//            } else {
 //                orders = new ArrayList<>(Arrays.asList(objectMapper.readValue(file, Order[].class)));
 //            }
 //            orders.add(order);
@@ -239,120 +207,424 @@
 //            if (!file.exists()) {
 //                return new ArrayList<>();
 //            }
-//            return new ArrayList<Order>(Arrays.asList(objectMapper.readValue(file, Order[].class)));
+//            return new ArrayList<>(Arrays.asList(objectMapper.readValue(file, Order[].class)));
 //        } catch (IOException e) {
 //            throw new RuntimeException("Failed to read from JSON file", e);
 //        }
 //    }
 //
-//    // ------------------------ User Tests -------------------------
 //
-//    // Add User Service Tests
+//
+//
+//
 //    @Test
-//    void testAddUserEndPoint1() throws Exception {
-//        User testUser = new User();
-//        testUser.setId(UUID.randomUUID());
-//        testUser.setName("Test User 1");
+//    void testAddUser_HappyPath() {
+//        UUID userId = UUID.randomUUID();
+//        User user = new User();
+//        user.setId(userId);
+//        user.setName("Test User Happy");
 //
-//        userService.addUser(testUser);
+//        User returned = userService.addUser(user);
+//        assertNotNull(returned, "addUser should return a non-null user");
+//        assertEquals(userId, returned.getId(), "Returned user ID should match");
+//        assertEquals("Test User Happy", returned.getName(), "Returned user name should match");
 //
-//        boolean found=false;
-//
-//        for(User user: getUsers()) {
-//            if(user.getId().equals(testUser.getId()) && user.getName().equals(testUser.getName())){
-//                found=true;
-//                break;
-//            }
-//        }
-//
-//        assertTrue(found,"User should be added correctly");
+//        // Verify directly from the JSON file using the helper method.
+//        List<User> users = getUsers(); // Helper method that reads the user JSON file.
+//        boolean found = users.stream()
+//                .anyMatch(u -> u.getId().equals(userId) && "Test User Happy".equals(u.getName()));
+//        assertTrue(found, "The user should be present in the JSON file after addUser");
 //    }
 //
-//    // Get User Service Tests
+//
 //    @Test
-//    void testGetUserEndPoint1() throws Exception {
-//        User testUser = new User();
-//        testUser.setId(UUID.randomUUID());
-//        testUser.setName("Test User 2");
+//    void testAddUser_Duplicate() {
+//        UUID userId = UUID.randomUUID();
+//        User user1 = new User();
+//        user1.setId(userId);
+//        user1.setName("Duplicate User");
 //
-//        addUser(testUser);
+//        User user2 = new User();
+//        user2.setId(userId);
+//        user2.setName("Duplicate User");
 //
-//        ArrayList<User> users = userService.getUsers();
+//        userService.addUser(user1);
+//        userService.addUser(user2);
 //
-//        boolean found=false;
-//
-//        for(User user: users) {
-//            if(user.getId().equals(testUser.getId()) && user.getName().equals(testUser.getName())){
-//                found=true;
-//                break;
-//            }
-//        }
-//
-//        assertTrue(found,"User should be added correctly");
+//        List<User> users = getUsers(); // Read directly from the JSON file.
+//        long count = users.stream().filter(u -> u.getId().equals(userId)).count();
+//        // Expecting two entries if duplicates are allowed.
+//        assertEquals(2, count, "There should be two entries for the duplicate user ID");
 //    }
 //
-//    // Get User By ID Tests
+//
 //    @Test
-//    void testGetUserByIdEndPoint1() throws Exception {
-//        User testUser = new User();
-//        testUser.setId(UUID.randomUUID());
-//        testUser.setName("Test User 3");
+//    void testAddUser_InvalidInput() {
+//        User result = userService.addUser(null);
+//        assertNull(result, "addUser(null) should return null");
 //
-//        addUser(testUser);
-//
-//        testUser = userService.getUserById(testUser.getId());
-//
-//        assertNotNull(testUser, "User found successfully");
+//        List<User> users = getUsers(); // Verify that the JSON file remains empty.
+//        assertEquals(0, users.size(), "JSON file should remain empty when null is added");
 //    }
 //
-//    // Get User Orders By ID Tests
+//
+//
 //    @Test
-//    void testGetUserOrdersEndPoint1() throws Exception {
-//        User testUser = new User();
-//        testUser.setId(UUID.randomUUID());
-//        testUser.setName("Test User 4");
-//        testUser.setOrders(List.of(new Order(UUID.randomUUID(), testUser.getId(), 10.0, List.of(new Product(UUID.randomUUID(), "Test Product", 10.0)))));
+//    void testGetUserById_HappyPath() {
 //
-//        addUser(testUser);
+//        UUID userId = UUID.randomUUID();
+//        User expectedUser = new User();
+//        expectedUser.setId(userId);
+//        expectedUser.setName("Happy Path User");
 //
-//        List<Order> orders = userService.getOrdersByUserById(testUser.getId());
+//        // Use the helper method to add the user directly to the JSON file.
+//        addUser(expectedUser);
 //
-//        assertFalse(orders.isEmpty(), "Order found successfully");
+//        // Now call the service method to retrieve the user.
+//        User retrieved = userService.getUserById(userId);
+//        assertNotNull(retrieved, "getUserById should retrieve the user when it exists");
+//        assertEquals(expectedUser.getId(), retrieved.getId(), "Retrieved user ID should match the expected ID");
+//        assertEquals(expectedUser.getName(), retrieved.getName(), "Retrieved user name should match the expected name");
 //    }
 //
-//    // TODO Create New Order To User Tests
+//
 //    @Test
-//    void testAddOrderToUserEndPoint1() throws Exception {}
-//
-//    // TODO Empty Cart Tests
-//    @Test
-//    void testEmptyCartTestsEndPoint1() throws Exception {}
-//
-//    // TODO Remove Order From User Tests
-//    @Test
-//    void testRemoveOrderFromUserEndPoint1() throws Exception {}
-//
-//    // Delete the User Tests
-//    @Test
-//    void testRemoveUserByIdEndPoint1() throws Exception {
-//        User testUser = new User();
-//        testUser.setId(UUID.randomUUID());
-//        testUser.setName("Test User 5");
-//
-//        addUser(testUser);
-//
-//        userService.deleteUserById(testUser.getId());
-//
-//        boolean found=false;
-//
-//        for(User user: getUsers()) {
-//            if(user.getId().equals(testUser.getId()) && user.getName().equals(testUser.getName())){
-//                found=true;
-//                break;
-//            }
-//        }
-//
-//        assertFalse(found,"User should not exist");
+//    void testGetUserById_NonExistent() {
+//        // Generate a random ID that we know does not exist in the JSON file.
+//        UUID randomId = UUID.randomUUID();
+//        User retrieved = userService.getUserById(randomId);
+//        assertNull(retrieved, "getUserById should return null for a non-existent user");
 //    }
+//
+//
+//    @Test
+//    void testGetUserById_AfterDeletion() {
+//
+//        UUID userId = UUID.randomUUID();
+//        User user = new User();
+//        user.setId(userId);
+//        user.setName("User To Delete");
+//        addUser(user);
+//        overRideAll();
+//        User retrieved = userService.getUserById(userId);
+//        assertNull(retrieved, "After deletion, getUserById should return null");
+//    }
+//
+//
+//
+//    @Test
+//    void testGetOrdersByUserId_HappyPath() {
+//
+//        UUID userId = UUID.randomUUID();
+//        Order order = new Order();
+//        order.setId(UUID.randomUUID());
+//        order.setUserId(userId);
+//        order.setTotalPrice(100.0);
+//        order.setProducts(new ArrayList<>());
+//        addOrder(order);
+//        User user = new User();
+//        user.setId(userId);
+//        user.setName("Order User");
+//        user.setOrders(new ArrayList<>(List.of(order)));
+//        addUser(user);
+//
+//
+//        List<Order> userOrders = userService.getOrdersByUserById(userId);
+//        assertEquals(1, userOrders.size(), "User should have one order");
+//
+//    }
+//
+//
+//    @Test
+//    void testGetOrdersByUserId_Empty() {
+//        // Create a user with an empty order list.
+//        UUID userId = UUID.randomUUID();
+//        User user = new User();
+//        user.setId(userId);
+//        user.setName("No Order User");
+//        user.setOrders(new ArrayList<>());
+//        addUser(user);
+//        List<Order> userOrders = userService.getOrdersByUserById(userId);
+//        assertTrue(userOrders.isEmpty(), "User with no orders should return an empty list");
+//    }
+//
+//    @Test
+//    void testGetOrdersByUserId_NonExistentUser() {
+//
+//        UUID randomUserId = UUID.randomUUID();
+//        List<Order> userOrders = userService.getOrdersByUserById(randomUserId);
+//
+//        assertTrue(userOrders.isEmpty(), "Non-existent user should have an empty order list");
+//    }
+//
+//
+//
+//    @Test
+//    void testAddOrderToUser_SingleProduct() {
+//        // Create and add a user using helper.
+//        UUID userId = UUID.randomUUID();
+//        User user = new User();
+//        user.setId(userId);
+//        user.setName("Single Product User");
+//        addUser(user);
+//
+//        // Create a cart for the user with a single product.
+//        Cart cart = new Cart();
+//        cart.setId(UUID.randomUUID());
+//        cart.setUserId(userId);
+//        Product product = new Product(UUID.randomUUID(), "Product A", 50.0);
+//        cart.setProducts(new ArrayList<>(List.of(product)));
+//        addCart(cart);
+//
+//        // Call addOrderToUser; this should create an order based on the cart and empty the cart.
+//        userService.addOrderToUser(userId);
+//
+//        // Verify the order was created correctly by reading the order JSON file.
+//        List<Order> orders = getOrders();
+//        assertEquals(1, orders.size(), "One order should be created");
+//        Order order = orders.get(0);
+//        assertEquals(userId, order.getUserId(), "Order should belong to the correct user");
+//        assertEquals(50.0, order.getTotalPrice(), 0.001, "Order total should equal the product price");
+//    }
+//
+//    @Test
+//    void testAddOrderToUser_MultipleProducts() {
+//        // Create and add a user.
+//        UUID userId = UUID.randomUUID();
+//        User user = new User();
+//        user.setId(userId);
+//        user.setName("Multiple Products User");
+//        addUser(user);
+//
+//        // Create a cart with two products.
+//        Cart cart = new Cart();
+//        cart.setId(UUID.randomUUID());
+//        cart.setUserId(userId);
+//        Product product1 = new Product(UUID.randomUUID(), "Product A", 30.0);
+//        Product product2 = new Product(UUID.randomUUID(), "Product B", 20.0);
+//        cart.setProducts(new ArrayList<>(List.of(product1, product2)));
+//        addCart(cart);
+//
+//        // Call addOrderToUser.
+//        userService.addOrderToUser(userId);
+//
+//        // Verify the order total equals 50.0 by reading the orders JSON file.
+//        List<Order> orders = getOrders();
+//        assertEquals(1, orders.size(), "One order should be created");
+//        Order order = orders.get(0);
+//        assertEquals(50.0, order.getTotalPrice(), 0.001, "Order total should equal the sum of product prices");
+//    }
+//
+//    @Test
+//    void testAddOrderToUser_CartEmptiedAfterCheckout() {
+//        // Create and add a user.
+//        UUID userId = UUID.randomUUID();
+//        User user = new User();
+//        user.setId(userId);
+//        user.setName("Cart Emptied User");
+//        addUser(user);
+//
+//        // Create a cart with a product.
+//        Cart cart = new Cart();
+//        cart.setId(UUID.randomUUID());
+//        cart.setUserId(userId);
+//        Product product = new Product(UUID.randomUUID(), "Product A", 40.0);
+//        cart.setProducts(new ArrayList<>(List.of(product)));
+//        addCart(cart);
+//
+//
+//        userService.addOrderToUser(userId);
+//
+//
+//        List<Order> orders = getOrders();
+//        assertEquals(1, orders.size(), "One order should be created");
+//
+//
+//        List<Cart> carts = getCarts();
+//        Cart userCart = carts.stream().filter(c -> c.getUserId().equals(userId)).findFirst().orElse(null);
+//        assertNotNull(userCart, "User's cart should exist");
+//        assertTrue(userCart.getProducts().isEmpty(), "User's cart should be empty after checkout");
+//    }
+//
+//
+//    // Test 1: Happy Path – Given a user with a non-empty cart, emptyCart should clear the products.
+//    @Test
+//    void testEmptyCart_HappyPath() {
+//        UUID userId = UUID.randomUUID();
+//        // Create a user and add directly.
+//        User user = new User();
+//        user.setId(userId);
+//        user.setName("Cart User");
+//        addUser(user);
+//        Cart cart = new Cart();
+//        cart.setId(UUID.randomUUID());
+//        cart.setUserId(userId);
+//        Product product = new Product(UUID.randomUUID(), "Product A", 25.0);
+//        cart.setProducts(new ArrayList<>(List.of(product)));
+//        addCart(cart);
+//        userService.emptyCart(userId);
+//        List<Cart> carts = getCarts();
+//        Cart userCart = carts.stream().filter(c -> c.getUserId().equals(userId)).findFirst().orElse(null);
+//        assertNotNull(userCart, "User's cart should exist");
+//        assertTrue(userCart.getProducts().isEmpty(), "User's cart should be empty after emptyCart");
+//    }
+//
+//
+//    // Test 2: Non-Existent User – Calling emptyCart on a user not present should leave carts unchanged.
+//    @Test
+//    void testEmptyCart_NonExistentUser() {
+//        UUID randomUserId = UUID.randomUUID();
+//        userService.emptyCart(randomUserId);
+//        List<Cart> carts = getCarts();
+//        boolean exists = carts.stream().anyMatch(c -> c.getUserId().equals(randomUserId));
+//        assertFalse(exists, "No cart should exist for a non-existent user after emptyCart");
+//    }
+//
+//    // Test 3: Already Empty – If the user's cart is already empty, emptyCart should leave it empty.
+//    @Test
+//    void testEmptyCart_AlreadyEmpty() {
+//        UUID userId = UUID.randomUUID();
+//        User user = new User();
+//        user.setId(userId);
+//        user.setName("Already Empty User");
+//        addUser(user);
+//
+//        // Create a cart with no products.
+//        Cart cart = new Cart();
+//        cart.setId(UUID.randomUUID());
+//        cart.setUserId(userId);
+//        cart.setProducts(new ArrayList<>());
+//        addCart(cart);
+//
+//        userService.emptyCart(userId);
+//        List<Cart> carts = getCarts();
+//        Cart userCart = carts.stream().filter(c -> c.getUserId().equals(userId)).findFirst().orElse(null);
+//        assertNotNull(userCart, "User's cart should exist");
+//        assertTrue(userCart.getProducts().isEmpty(), "Cart should remain empty after emptyCart is called on an already empty cart");
+//    }
+//
+//
+//
+//    @Test
+//    void testRemoveOrderFromUser_HappyPath() {
+//        UUID userId = UUID.randomUUID();
+//        User user = new User();
+//        user.setId(userId);
+//        user.setName("Order Removal User");
+//        // Create an order.
+//        Order order = new Order();
+//        UUID orderId = UUID.randomUUID();
+//        order.setId(orderId);
+//        order.setUserId(userId);
+//        order.setTotalPrice(80.0);
+//        order.setProducts(new ArrayList<>());
+//        user.setOrders(new ArrayList<>(List.of(order)));
+//        addUser(user);
+//
+//        // Call removeOrderFromUser.
+//        userService.removeOrderFromUser(userId, orderId);
+//
+//        // Verify by directly reading the user JSON file.
+//        List<User> users = getUsers();
+//        User foundUser = users.stream().filter(u -> u.getId().equals(userId)).findFirst().orElse(null);
+//        assertNotNull(foundUser, "User should exist");
+//        // The user's orders list should be empty.
+//        assertTrue(foundUser.getOrders() == null || foundUser.getOrders().isEmpty(),
+//                "User's order list should be empty after removal");
+//    }
+//
+//    // Test 2: Order Not Found – If the specified orderId is not in the user's order list, no removal occurs.
+//    @Test
+//    void testRemoveOrderFromUser_OrderNotFound() {
+//        UUID userId = UUID.randomUUID();
+//        User user = new User();
+//        user.setId(userId);
+//        user.setName("Order Not Found User");
+//        Order order = new Order();
+//        order.setId(UUID.randomUUID());
+//        order.setUserId(userId);
+//        order.setTotalPrice(80.0);
+//        order.setProducts(new ArrayList<>());
+//        user.setOrders(new ArrayList<>(List.of(order)));
+//        addUser(user);
+//
+//        // Call removeOrderFromUser with a random orderId.
+//        userService.removeOrderFromUser(userId, UUID.randomUUID());
+//
+//        // Verify the order still exists.
+//        List<User> users = getUsers();
+//        User foundUser = users.stream().filter(u -> u.getId().equals(userId)).findFirst().orElse(null);
+//        assertNotNull(foundUser, "User should exist");
+//        assertFalse(foundUser.getOrders().isEmpty(), "User's order list should remain unchanged if order is not found");
+//    }
+//
+//    // Test 3: Non-Existent User – Removing an order for a user not in the system should leave orders unchanged.
+//    @Test
+//    void testRemoveOrderFromUser_NonExistentUser() {
+//        UUID randomUserId = UUID.randomUUID();
+//        userService.removeOrderFromUser(randomUserId, UUID.randomUUID());
+//        // Directly verify the order JSON file remains unchanged (i.e. empty).
+//        List<Order> orders = getOrders();
+//        assertTrue(orders.isEmpty(), "Order JSON file should remain empty for a non-existent user");
+//    }
+//
+//    // =============================================================
+//    // 3. Tests for deleteUserById(UUID userId)
+//    // =============================================================
+//
+//    // Test 1: Happy Path – A user is deleted and is no longer present in the JSON file.
+//    @Test
+//    void testDeleteUserById_HappyPath() {
+//        UUID userId = UUID.randomUUID();
+//        User user = new User();
+//        user.setId(userId);
+//        user.setName("Delete User");
+//        addUser(user);
+//
+//        userService.deleteUserById(userId);
+//
+//        List<User> users = getUsers();
+//        boolean found = users.stream().anyMatch(u -> u.getId().equals(userId));
+//        assertFalse(found, "User should be deleted from the JSON file");
+//    }
+//
+//    @Test
+//    void testDeleteUserById_NonExistent_ExistingRemains() {
+//        // Add a user
+//        UUID existingUserId = UUID.randomUUID();
+//        User user = new User();
+//        user.setId(existingUserId);
+//        user.setName("Existing User");
+//        addUser(user);
+//
+//
+//        userService.deleteUserById(UUID.randomUUID());
+//
+//
+//        List<User> users = getUsers();
+//        assertEquals(1, users.size(), "Existing user should remain after attempting to delete a non-existent user");
+//        assertEquals(existingUserId, users.get(0).getId(), "The remaining user's ID should match the original user");
+//    }
+//
+//    // Test 3: Multiple Users – When multiple users exist, deleting one should leave the other intact.
+//    @Test
+//    void testDeleteUserById_MultipleUsers() {
+//        User user1 = new User();
+//        user1.setId(UUID.randomUUID());
+//        user1.setName("User One");
+//        User user2 = new User();
+//        user2.setId(UUID.randomUUID());
+//        user2.setName("User Two");
+//        addUser(user1);
+//        addUser(user2);
+//        userService.deleteUserById(user1.getId());
+//
+//        List<User> users = getUsers();
+//        assertEquals(1, users.size(), "Only one user should remain after deletion");
+//        assertEquals(user2.getId(), users.get(0).getId(), "Remaining user should be user2");
+//    }
+//
+//
+//
 //
 //}
