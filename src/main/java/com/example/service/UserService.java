@@ -106,7 +106,7 @@ public class UserService extends MainService<User> {
     public void emptyCart(UUID userId) {
         Cart cart = cartService.getCartByUserId(userId);
         if (cart != null) {
-            cart.getProducts().forEach(product -> productService.deleteProductById(product.getId()));
+//            cart.getProducts().forEach(product -> productService.deleteProductById(product.getId()));
             cart.setProducts(new ArrayList<>());
         }
     }

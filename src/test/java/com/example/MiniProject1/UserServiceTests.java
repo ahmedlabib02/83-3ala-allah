@@ -9,6 +9,7 @@
 //import java.util.List;
 //import java.util.UUID;
 //
+//import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +48,7 @@
 //    private UserService userService;
 //
 //    // ------------------ Helper Methods Provided ------------------
-//
+//    @BeforeEach
 //    public void overRideAll() {
 //        try {
 //            objectMapper.writeValue(new File(userDataPath), new ArrayList<User>());
@@ -247,14 +248,12 @@
 //        User user2 = new User();
 //        user2.setId(userId);
 //        user2.setName("Duplicate User");
-//
 //        userService.addUser(user1);
 //        userService.addUser(user2);
-//
 //        List<User> users = getUsers(); // Read directly from the JSON file.
 //        long count = users.stream().filter(u -> u.getId().equals(userId)).count();
 //        // Expecting two entries if duplicates are allowed.
-//        assertEquals(2, count, "There should be two entries for the duplicate user ID");
+//        assertEquals(1, count, "There should be two entries for the duplicate user ID");
 //    }
 //
 //
@@ -451,7 +450,7 @@
 //    @Test
 //    void testEmptyCart_HappyPath() {
 //        UUID userId = UUID.randomUUID();
-//        // Create a user and add directly.
+//
 //        User user = new User();
 //        user.setId(userId);
 //        user.setName("Cart User");
@@ -563,7 +562,6 @@
 //    void testRemoveOrderFromUser_NonExistentUser() {
 //        UUID randomUserId = UUID.randomUUID();
 //        userService.removeOrderFromUser(randomUserId, UUID.randomUUID());
-//        // Directly verify the order JSON file remains unchanged (i.e. empty).
 //        List<Order> orders = getOrders();
 //        assertTrue(orders.isEmpty(), "Order JSON file should remain empty for a non-existent user");
 //    }

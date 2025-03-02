@@ -1,7 +1,10 @@
 //package com.example.MiniProject1;
 //import static org.junit.jupiter.api.Assertions.*;
 //
+//import com.example.model.Cart;
+//import com.example.model.Order;
 //import com.example.model.Product;
+//import com.example.model.User;
 //import com.example.service.ProductService;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +23,9 @@
 //    @SpringBootTest
 //    public class ProductServiceTests {
 //
+//
+//
+//
 //        @Value("${spring.application.productDataPath}")
 //        private String productDataPath;
 //
@@ -29,18 +35,17 @@
 //        @Autowired
 //        private ObjectMapper objectMapper;
 //
-//        /**
-//         * Clears the product JSON file before each test.
-//         */
-//        @BeforeEach
-//        public void setUp() {
-//            File file = new File(productDataPath);
-//            try {
-//                objectMapper.writeValue(file, new ArrayList<Product>());
+//      @BeforeEach
+//        public void overRideAll(){
+//            try{
+//                objectMapper.writeValue(new File(productDataPath), new ArrayList<Product>());
 //            } catch (IOException e) {
-//                fail("Failed to clear the product data file: " + e.getMessage());
+//                throw new RuntimeException("Failed to write to JSON file", e);
 //            }
 //        }
+//
+//
+//
 //
 //        // ============================================================
 //        // Tests for addProduct() method (3 tests)
