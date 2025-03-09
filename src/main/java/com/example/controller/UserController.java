@@ -37,7 +37,12 @@ public class UserController {
      */
     @PostMapping("/")
     public User addUser(@RequestBody User user) {
-        return userService.addUser(user);
+        try {
+            return userService.addUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -58,7 +63,12 @@ public class UserController {
      */
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable UUID userId) {
-        return userService.getUserById(userId);
+        try {
+            return userService.getUserById(userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -69,7 +79,12 @@ public class UserController {
      */
     @GetMapping("/{userId}/orders")
     public List<Order> getOrdersByUserId(@PathVariable UUID userId) {
-        return userService.getOrdersByUserById(userId);
+        try {
+            return userService.getOrdersByUserById(userId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -80,8 +95,13 @@ public class UserController {
      */
     @PostMapping("/{userId}/checkout")
     public String addOrderToUser(@PathVariable UUID userId) {
-        userService.addOrderToUser(userId);
-        return HttpStatus.OK.toString();
+        try {
+            userService.addOrderToUser(userId);
+            return HttpStatus.OK.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpStatus.NOT_FOUND.toString();
+        }
     }
 
     /**
@@ -93,8 +113,13 @@ public class UserController {
      */
     @PostMapping("/{userId}/removeOrder")
     public String removeOrderFromUser(@PathVariable UUID userId, @RequestParam UUID orderId) {
-        userService.removeOrderFromUser(userId, orderId);
-        return HttpStatus.OK.toString();
+        try {
+            userService.removeOrderFromUser(userId, orderId);
+            return HttpStatus.OK.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpStatus.NOT_FOUND.toString();
+        }
     }
 
     /**
@@ -105,8 +130,13 @@ public class UserController {
      */
     @DeleteMapping("/{userId}/emptyCart")
     public String emptyCart(@PathVariable UUID userId) {
-        userService.emptyCart(userId);
-        return HttpStatus.OK.toString();
+        try {
+            userService.emptyCart(userId);
+            return HttpStatus.OK.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpStatus.NOT_FOUND.toString();
+        }
     }
 
     /**
@@ -118,9 +148,14 @@ public class UserController {
      */
     @PostMapping("/addProductToCart")
     public String addProductToCart(@RequestParam UUID userId, @RequestParam UUID productId) {
-        Product product = productService.getProductById(productId);
-        cartService.addProductToCart(userId, product);
-        return HttpStatus.OK.toString();
+        try {
+            Product product = productService.getProductById(productId);
+            cartService.addProductToCart(userId, product);
+            return HttpStatus.OK.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpStatus.NOT_FOUND.toString();
+        }
     }
 
     /**
@@ -132,9 +167,14 @@ public class UserController {
      */
     @PutMapping("/deleteProductFromCart")
     public String deleteProductFromCart(@RequestParam UUID userId, @RequestParam UUID productId) {
-        Product product = productService.getProductById(productId);
-        cartService.deleteProductFromCart(userId, product);
-        return HttpStatus.OK.toString();
+        try {
+            Product product = productService.getProductById(productId);
+            cartService.deleteProductFromCart(userId, product);
+            return HttpStatus.OK.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpStatus.NOT_FOUND.toString();
+        }
     }
 
     /**
@@ -145,7 +185,12 @@ public class UserController {
      */
     @DeleteMapping("/delete/{userId}")
     public String deleteUserById(@PathVariable UUID userId) {
-        userService.deleteUserById(userId);
-        return HttpStatus.OK.toString();
+        try {
+            userService.deleteUserById(userId);
+            return HttpStatus.OK.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpStatus.NOT_FOUND.toString();
+        }
     }
 }

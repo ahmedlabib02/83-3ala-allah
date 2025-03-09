@@ -4,6 +4,8 @@ import com.example.model.Cart;
 import com.example.model.Order;
 import com.example.model.Product;
 import com.example.model.User;
+import com.example.repository.CartRepository;
+import com.example.repository.OrderRepository;
 import com.example.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,16 +19,14 @@ import java.util.UUID;
 public class UserService extends MainService<User> {
 
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
     private final CartService cartService;
-    private final ProductService productService;
-    private final OrderService orderService;
 
     @Autowired
-    public UserService(UserRepository userRepository, CartService cartService, ProductService productService, OrderService orderService) {
+    public UserService(UserRepository userRepository, CartService cartService, OrderRepository orderRepository) {
         this.userRepository = userRepository;
         this.cartService = cartService;
-        this.productService = productService;
-        this.orderService = orderService;
+        this.orderRepository = orderRepository;
     }
 
     /**
@@ -36,7 +36,11 @@ public class UserService extends MainService<User> {
      * @return The created user.
      */
     public User addUser(User user) {
-        return userRepository.addUser(user);
+        if (user != null) {
+            return userRepository.addUser(user);
+        } else {
+            throw new IllegalArgumentException("user is null");
+        }
     }
 
     /**
@@ -55,7 +59,11 @@ public class UserService extends MainService<User> {
      * @return The user object if found.
      */
     public User getUserById(UUID userId) {
-        return userRepository.getUserById(userId);
+        if (userRepository.getUserById(userId) != null) {
+            return userRepository.getUserById(userId);
+        } else {
+            throw new IllegalArgumentException("user not found");
+        }
     }
 
     /**
@@ -65,7 +73,11 @@ public class UserService extends MainService<User> {
      * @return A list of orders placed by the user.
      */
     public List<Order> getOrdersByUserById(UUID userId) {
-        return userRepository.getOrdersByUserId(userId);
+        if (userRepository.getUserById(userId) != null) {
+            return userRepository.getOrdersByUserId(userId);
+        } else {
+            throw new IllegalArgumentException("user not found");
+        }
     }
 
     /**
@@ -76,26 +88,31 @@ public class UserService extends MainService<User> {
      * @param userId The ID of the user checking out.
      */
     public void addOrderToUser(UUID userId) {
-        Cart cart = cartService.getCartByUserId(userId);
-        if (cart == null || cart.getProducts().isEmpty()) {
-            throw new IllegalStateException("Cart is empty or does not exist.");
+        if (userRepository.getUserById(userId) != null) {
+            // Get cart of the user
+            Cart cart = cartService.getCartByUserId(userId);
+
+            if (cart == null || cart.getProducts().isEmpty()) {
+                throw new IllegalStateException("Cart is empty or does not exist.");
+            }
+
+            // Calculate the total cost of products
+            double totalCost = cart.getProducts().stream()
+                    .mapToDouble(Product::getPrice)
+                    .sum();
+
+            // Update Order Repository
+            Order order = new Order(UUID.randomUUID(), userId, totalCost, cart.getProducts());
+            orderRepository.addOrder(order);
+
+            // Empty the cart after creating an order
+            emptyCart(userId);
+
+            // Update User Repository
+            userRepository.addOrderToUser(userId, order);
+        } else {
+            throw new IllegalArgumentException("user not found");
         }
-
-        double totalCost = cart.getProducts().stream()
-                .mapToDouble(Product::getPrice)
-                .sum();
-
-        Order order = new Order();
-        order.setUserId(userId);
-        order.setTotalPrice(totalCost);
-        order.setProducts(cart.getProducts());
-
-        orderService.addOrder(order);
-
-        // Empty the cart after creating an order
-        emptyCart(userId);
-
-        userRepository.addOrderToUser(userId, order);
     }
 
     /**
@@ -104,10 +121,16 @@ public class UserService extends MainService<User> {
      * @param userId The ID of the user whose cart should be emptied.
      */
     public void emptyCart(UUID userId) {
-        Cart cart = cartService.getCartByUserId(userId);
-        if (cart != null) {
-//            cart.getProducts().forEach(product -> productService.deleteProductById(product.getId()));
-            cart.setProducts(new ArrayList<>());
+        if (userRepository.getUserById(userId) != null) {
+            Cart cart = cartService.getCartByUserId(userId);
+            List<Product> products = cart.getProducts();
+
+            for (Product product : products) {
+                cartService.deleteProductFromCart(cart.getId(), product);
+            }
+
+        } else {
+            throw new IllegalArgumentException("user not found");
         }
     }
 
@@ -118,8 +141,21 @@ public class UserService extends MainService<User> {
      * @param orderId The ID of the order to be removed.
      */
     public void removeOrderFromUser(UUID userId, UUID orderId) {
-        userRepository.removeOrderFromUser(userId, orderId);
-        orderService.deleteOrderById(orderId);
+        if (userRepository.getUserById(userId) != null && orderRepository.getOrderById(orderId) != null) {
+            if (orderRepository.getOrderById(orderId) != null) {
+                if (orderRepository.getOrderById(orderId).getUserId().equals(userId)) {
+                    userRepository.removeOrderFromUser(userId, orderId);
+                    orderRepository.deleteOrderById(orderId);
+                } else {
+                    throw new IllegalArgumentException("user not assigned to that order");
+                }
+            }
+            else {
+                throw new IllegalArgumentException("order not found");
+            }
+        } else {
+            throw new IllegalArgumentException("user not found");
+        }
     }
 
     /**
@@ -128,6 +164,10 @@ public class UserService extends MainService<User> {
      * @param userId The ID of the user to be deleted.
      */
     public void deleteUserById(UUID userId) {
-        userRepository.deleteUserById(userId);
+        if (userRepository.getUserById(userId) != null) {
+            userRepository.deleteUserById(userId);
+        } else {
+            throw new IllegalArgumentException("user not found");
+        }
     }
 }
