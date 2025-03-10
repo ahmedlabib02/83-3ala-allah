@@ -93,7 +93,6 @@ public class UserRepository extends MainRepository<User> {
         if (orders.stream().anyMatch(o -> o.getId().equals(order.getId()))) {
             System.out.println("Order already exists");
         } else {
-            // Add order to the database
             orders.add(order);
 
             // Update user database

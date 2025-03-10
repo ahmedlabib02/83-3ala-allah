@@ -96,9 +96,9 @@ public class UserController {
         try {
             userService.addOrderToUser(userId);
             return "Order added successfully";
-        } catch (IllegalArgumentException e) {
-            return "Cart is empty";
         } catch (IllegalStateException e) {
+            return "Cart is empty";
+        } catch (IllegalArgumentException e) {
             return "User not found";
         } catch (Exception e) {
             return "Invalid request";
