@@ -155,7 +155,7 @@ public class UserController {
      * @param productId The unique identifier of the product.
      * @return HTTP status indicating success.
      */
-    @PostMapping("/addProductToCart")
+    @PutMapping("/addProductToCart")
     public String addProductToCart(@RequestParam UUID userId, @RequestParam UUID productId) {
         try {
             Product product = null;
@@ -173,7 +173,22 @@ public class UserController {
                 return "User not found";
             }
 
+            // Create a new cart
+            if (cart == null) {
+                // Create product list
+                ArrayList<Product> products = new ArrayList<>();
+                // the cart contains only one product
+                products.add(product);
+
+                // Create new user cart
+                cart = new Cart(UUID.randomUUID(), userId, products);
+
+                // Add the new cart to the repository
+                cartService.addCart(cart);
+            }
+
             cartService.addProductToCart(cart.getId(), product);
+
             return "Product added to cart";
         } catch (Exception e) {
             return "Cart not found";

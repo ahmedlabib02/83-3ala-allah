@@ -52,6 +52,8 @@ public class CartRepository extends MainRepository<Cart> {
     public void addProductToCart(UUID cartId, Product product) {
         ArrayList<Cart> carts = findAll();
 
+        System.out.println("Repo CartId : " + cartId);
+
         for (int i = 0; i < carts.size(); i++) {
             Cart cart = carts.get(i);
             if (cart.getId().equals(cartId)) {
@@ -60,6 +62,8 @@ public class CartRepository extends MainRepository<Cart> {
                 break;
             }
         }
+
+        System.out.println("Carts: " + carts);
 
         overrideData(carts);
     }
