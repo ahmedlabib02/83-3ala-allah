@@ -25,13 +25,16 @@ public class ProductRepository extends MainRepository<Product> {
     }
 
     public Product addProduct(Product product) {
+        if (product == null) {
+            System.out.println("Error: Product cannot be null!");
+            return null;
+        }
         if (getProductById(product.getId()) != null) {
-            System.out.print("Product Already Exists!");
+            System.out.println("Product Already Exists!");
             return null;
         } else {
-            System.out.print("Product Added!");
+            System.out.println("Product Added!");
             save(product);
-
         }
         return product;
     }
@@ -52,6 +55,11 @@ public class ProductRepository extends MainRepository<Product> {
     }
 
     public Product updateProduct(UUID productId, String newName, double newPrice) {
+        if (productId == null || newName == null || newName.trim().isEmpty() || newPrice < 0) {
+            System.out.println("Invalid input for product update!");
+            return null;
+        }
+
         ArrayList<Product> products = findAll();
 
         for (Product product : products) {
@@ -63,6 +71,7 @@ public class ProductRepository extends MainRepository<Product> {
                 return product;
             }
         }
+
         System.out.println("Product does not exist!");
         return null;
     }
