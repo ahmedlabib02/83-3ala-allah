@@ -135,7 +135,7 @@ public class UserController {
             return "Cart emptied successfully";
         } catch (Exception e) {
             e.printStackTrace();
-            return HttpStatus.NOT_FOUND.toString();
+            return "User not found";
         }
     }
 
@@ -151,9 +151,8 @@ public class UserController {
         try {
             Product product = productService.getProductById(productId);
             cartService.addProductToCart(userId, product);
-            return HttpStatus.OK.toString();
+            return "Product added to cart";
         } catch (Exception e) {
-            e.printStackTrace();
             return HttpStatus.NOT_FOUND.toString();
         }
     }
