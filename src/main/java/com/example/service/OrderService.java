@@ -18,7 +18,8 @@ public class OrderService extends MainService<Order> {
     }
 
     public void addOrder(Order order) {
-        orderRepository.addOrder(order);
+        if(order!=null && getOrderById(order.getId())==null)
+            orderRepository.addOrder(order);
     }
 
     public ArrayList<Order> getOrders() {
