@@ -98,22 +98,7 @@ public class UserServiceTests {
         return null;
     }
 
-    public Product addProduct(Product product) {
-        try {
-            File file = new File(productDataPath);
-            ArrayList<Product> products;
-            if (!file.exists()) {
-                products = new ArrayList<>();
-            } else {
-                products = new ArrayList<>(Arrays.asList(objectMapper.readValue(file, Product[].class)));
-            }
-            products.add(product);
-            objectMapper.writeValue(file, products);
-            return product;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to write to JSON file", e);
-        }
-    }
+
 
     public ArrayList<Product> getProducts() {
         try {
@@ -267,6 +252,61 @@ public class UserServiceTests {
     }
 
 
+    @Test
+    public void testGetUsers_HappyPath() {
+        // Arrange: Add two users directly to the JSON file.
+        User user1 = new User();
+        user1.setId(UUID.randomUUID());
+        user1.setName("Alice");
+
+        User user2 = new User();
+        user2.setId(UUID.randomUUID());
+        user2.setName("Bob");
+
+        addUser(user1);
+        addUser(user2);
+
+        // Act: Retrieve all users.
+        ArrayList<User> users = userService.getUsers();
+
+        // Assert: Verify that both users are returned.
+        assertEquals(2, users.size(), "getUsers should return two users");
+    }
+
+    @Test
+    public void testGetUsers_Empty() {
+        // Act: Retrieve users when no user has been added.
+        ArrayList<User> users = userService.getUsers();
+
+        // Assert: The returned list should be empty.
+        assertTrue(users.isEmpty(), "getUsers should return an empty list when no users are added");
+    }
+
+    @Test
+    public void testGetUsers_AfterDeletion() {
+        // Arrange: Add two users and then delete one.
+        User user1 = new User();
+        user1.setId(UUID.randomUUID());
+        user1.setName("Charlie");
+
+        User user2 = new User();
+        user2.setId(UUID.randomUUID());
+        user2.setName("Dana");
+
+        addUser(user1);
+        addUser(user2);
+        userService.deleteUserById(user1.getId());
+
+        // Act: Retrieve users after deletion.
+        ArrayList<User> users = userService.getUsers();
+
+        // Assert: Only the non-deleted user should remain.
+        assertEquals(1, users.size(), "getUsers should return one user after deletion");
+        assertEquals(user2.getId(), users.get(0).getId(), "The remaining user should be Dana");
+    }
+
+
+
 
     @Test
     void testGetUserById_HappyPath() {
@@ -381,7 +421,7 @@ public class UserServiceTests {
         // Verify the order was created correctly by reading the order JSON file.
         List<Order> orders = getOrders();
         assertEquals(1, orders.size(), "One order should be created");
-        Order order = orders.get(0);
+        Order order = orders.getFirst();
         assertEquals(userId, order.getUserId(), "Order should belong to the correct user");
         assertEquals(50.0, order.getTotalPrice(), 0.001, "Order total should equal the product price");
     }
@@ -430,11 +470,7 @@ public class UserServiceTests {
         Product product = new Product(UUID.randomUUID(), "Product A", 40.0);
         cart.setProducts(new ArrayList<>(List.of(product)));
         addCart(cart);
-
-
         userService.addOrderToUser(userId);
-
-
         List<Order> orders = getOrders();
         assertEquals(1, orders.size(), "One order should be created");
 
