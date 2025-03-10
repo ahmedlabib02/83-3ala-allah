@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.model.Cart;
 import com.example.model.Order;
 import com.example.model.Product;
 import com.example.model.User;
@@ -40,7 +41,6 @@ public class UserController {
         try {
             return userService.addUser(user);
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -66,7 +66,6 @@ public class UserController {
         try {
             return userService.getUserById(userId);
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -82,7 +81,6 @@ public class UserController {
         try {
             return userService.getOrdersByUserById(userId);
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -98,9 +96,12 @@ public class UserController {
         try {
             userService.addOrderToUser(userId);
             return "Order added successfully";
+        } catch (IllegalArgumentException e) {
+            return "Cart is empty";
+        } catch (IllegalStateException e) {
+            return "User not found";
         } catch (Exception e) {
-            e.printStackTrace();
-            return HttpStatus.NOT_FOUND.toString();
+            return "Invalid request";
         }
     }
 
@@ -116,9 +117,18 @@ public class UserController {
         try {
             userService.removeOrderFromUser(userId, orderId);
             return "Order removed successfully";
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().equals("user not found")) {
+                return "User not found";
+            } else if (e.getMessage().equals("order not found")) {
+                return "Order not found";
+            } else if (e.getMessage().equals("user not assigned to that order")) {
+                return "User is not assigned to that order";
+            } else {
+                return "Invalid request";
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            return HttpStatus.NOT_FOUND.toString();
+            return "Invalid request";
         }
     }
 
@@ -134,7 +144,6 @@ public class UserController {
             userService.emptyCart(userId);
             return "Cart emptied successfully";
         } catch (Exception e) {
-            e.printStackTrace();
             return "User not found";
         }
     }
@@ -149,11 +158,25 @@ public class UserController {
     @PostMapping("/addProductToCart")
     public String addProductToCart(@RequestParam UUID userId, @RequestParam UUID productId) {
         try {
-            Product product = productService.getProductById(productId);
-            cartService.addProductToCart(userId, product);
+            Product product = null;
+            Cart cart = null;
+
+            try {
+                product = productService.getProductById(productId);
+            } catch (Exception e) {
+                return "Product not found";
+            }
+
+            try {
+                cart = cartService.getCartByUserId(userId);
+            } catch (Exception e) {
+                return "User not found";
+            }
+
+            cartService.addProductToCart(cart.getId(), product);
             return "Product added to cart";
         } catch (Exception e) {
-            return HttpStatus.NOT_FOUND.toString();
+            return "Cart not found";
         }
     }
 
@@ -167,8 +190,22 @@ public class UserController {
     @PutMapping("/deleteProductFromCart")
     public String deleteProductFromCart(@RequestParam UUID userId, @RequestParam UUID productId) {
         try {
-            Product product = productService.getProductById(productId);
-            cartService.deleteProductFromCart(userId, product);
+            Product product = null;
+            Cart cart = null;
+
+            try {
+                product = productService.getProductById(productId);
+            } catch (Exception e) {
+                return "Product not found";
+            }
+
+            try {
+                cart = cartService.getCartByUserId(userId);
+            } catch (Exception e) {
+                return "User not found";
+            }
+
+            cartService.deleteProductFromCart(cart.getId(), product);
             return "Product deleted from cart";
         } catch (Exception e) {
             return "Cart is empty";
