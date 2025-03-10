@@ -39,7 +39,6 @@
 //        }
 //    }
 //
-//
 //    public ArrayList<Product> getProducts() {
 //        try {
 //            File file = new File(productDataPath);
@@ -99,11 +98,14 @@
 //        assertEquals(1, count, "There should be only one product with the same ID, no duplicates allowed");
 //    }
 //
+//    // Updated: Expect IllegalArgumentException when passing null.
 //    @Test
 //    public void testAddProduct_InvalidInput() {
-//        // When a null product is passed, assume productService.addProduct returns null and leaves the file unchanged.
-//        Product result = productService.addProduct(null);
-//        assertNull(result, "addProduct(null) should return null");
+//        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+//            productService.addProduct(null);
+//        });
+//        // Optionally, you can assert the exception message:
+//        // assertEquals("Product cannot be null", exception.getMessage());
 //        ArrayList<Product> products = getProducts();
 //        assertEquals(0, products.size(), "JSON file should remain empty when null is added");
 //    }
@@ -133,7 +135,6 @@
 //    public void testGetProducts_AfterDeletion() {
 //        Product product = new Product(UUID.randomUUID(), "Product to Delete", 60.0);
 //        addProduct(product);
-////        productService.deleteProductById(product.getId());
 //        overrideAll();
 //        ArrayList<Product> products = productService.getProducts();
 //        assertTrue(products.isEmpty(), "getProducts should return an empty list after deletion");
@@ -154,10 +155,13 @@
 //        assertEquals(prodId, retrieved.getId(), "Retrieved product ID should match");
 //    }
 //
+//    // Updated: Expect IllegalArgumentException when product is not found.
 //    @Test
 //    public void testGetProductById_NonExistent() {
-//        Product retrieved = productService.getProductById(UUID.randomUUID());
-//        assertNull(retrieved, "Non-existent product ID should return null");
+//        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+//            productService.getProductById(UUID.randomUUID());
+//        });
+//        // Optionally, assert exception message here.
 //    }
 //
 //    @Test
@@ -167,8 +171,9 @@
 //        addProduct(product);
 //        productService.deleteProductById(prodId);
 //
-//        Product retrieved = productService.getProductById(prodId);
-//        assertNull(retrieved, "Product should not be retrievable after deletion");
+//        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+//            productService.getProductById(prodId);
+//        });
 //    }
 //
 //    // ============================================================
@@ -195,21 +200,25 @@
 //        }
 //    }
 //
+//    // Updated: Expect exception when updating a non-existent product.
 //    @Test
 //    public void testUpdateProduct_NonExistent() {
-//        Product updated = productService.updateProduct(UUID.randomUUID(), "Name", 150.0);
-//        assertNull(updated, "Updating a non-existent product should return null");
+//        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+//            productService.updateProduct(UUID.randomUUID(), "Name", 150.0);
+//        });
 //    }
 //
+//    // Updated: Expect exception when invalid inputs are provided.
 //    @Test
 //    public void testUpdateProduct_InvalidInput() {
 //        UUID prodId = UUID.randomUUID();
 //        Product product = new Product(prodId, "Valid Name", 100.0);
 //        addProduct(product);
 //
-//        Product updated = productService.updateProduct(prodId, "", -50.0);
-//        assertNull(updated, "Updating with invalid inputs should return null");
-//
+//        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+//            productService.updateProduct(prodId, "", -50.0);
+//        });
+//        // Verify the product remains unchanged.
 //        Product retrieved = getProducts().stream().filter(p -> p.getId().equals(prodId)).findFirst().orElse(null);
 //        assertNotNull(retrieved, "Original product should remain unchanged");
 //        assertEquals("Valid Name", retrieved.getName(), "Product name should remain unchanged");
@@ -280,15 +289,16 @@
 //        addProduct(product);
 //        productService.deleteProductById(prodId);
 //
-//        Product retrieved =getProducts().stream().filter(p -> p.getId().equals(prodId)).findFirst().orElse(null);
+//        Product retrieved = getProducts().stream().filter(p -> p.getId().equals(prodId)).findFirst().orElse(null);
 //        assertNull(retrieved, "Product should be deleted and not retrievable");
 //    }
 //
+//    // Updated: Expect exception when deleting a non-existent product.
 //    @Test
 //    public void testDeleteProductById_NonExistent() {
-//        productService.deleteProductById(UUID.randomUUID());
-//        ArrayList<Product> products = getProducts();
-//        assertTrue(products.isEmpty(), "JSON file should remain empty when deleting non-existent product");
+//        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+//            productService.deleteProductById(UUID.randomUUID());
+//        });
 //    }
 //
 //    @Test

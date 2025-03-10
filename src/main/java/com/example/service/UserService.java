@@ -141,7 +141,7 @@ public class UserService extends MainService<User> {
      * @param orderId The ID of the order to be removed.
      */
     public void removeOrderFromUser(UUID userId, UUID orderId) {
-        if (userRepository.getUserById(userId) != null && orderRepository.getOrderById(orderId) != null) {
+        if (userRepository.getUserById(userId) != null) {
             if (orderRepository.getOrderById(orderId) != null) {
                 if (orderRepository.getOrderById(orderId).getUserId().equals(userId)) {
                     userRepository.removeOrderFromUser(userId, orderId);

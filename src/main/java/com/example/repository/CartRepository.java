@@ -70,7 +70,8 @@ public class CartRepository extends MainRepository<Cart> {
 
         for (int i = 0; i < carts.size(); i++) {
             Cart cart = carts.get(i);
-            if (cart.getId().equals(cartId)) {
+            if (cart.getId().equals(cartId))
+            {
                 cart.getProducts().removeIf(p -> p.getId().equals(product.getId()));
                 carts.set(i, cart);
                 break;

@@ -97,7 +97,7 @@ public class UserController {
     public String addOrderToUser(@PathVariable UUID userId) {
         try {
             userService.addOrderToUser(userId);
-            return HttpStatus.OK.toString();
+            return "Order added successfully";
         } catch (Exception e) {
             e.printStackTrace();
             return HttpStatus.NOT_FOUND.toString();
@@ -115,7 +115,7 @@ public class UserController {
     public String removeOrderFromUser(@PathVariable UUID userId, @RequestParam UUID orderId) {
         try {
             userService.removeOrderFromUser(userId, orderId);
-            return HttpStatus.OK.toString();
+            return "Order removed successfully";
         } catch (Exception e) {
             e.printStackTrace();
             return HttpStatus.NOT_FOUND.toString();
@@ -132,7 +132,7 @@ public class UserController {
     public String emptyCart(@PathVariable UUID userId) {
         try {
             userService.emptyCart(userId);
-            return HttpStatus.OK.toString();
+            return "Cart emptied successfully";
         } catch (Exception e) {
             e.printStackTrace();
             return HttpStatus.NOT_FOUND.toString();
@@ -170,10 +170,9 @@ public class UserController {
         try {
             Product product = productService.getProductById(productId);
             cartService.deleteProductFromCart(userId, product);
-            return HttpStatus.OK.toString();
+            return "Product deleted from cart";
         } catch (Exception e) {
-            e.printStackTrace();
-            return HttpStatus.NOT_FOUND.toString();
+            return "Cart is empty";
         }
     }
 
@@ -187,10 +186,9 @@ public class UserController {
     public String deleteUserById(@PathVariable UUID userId) {
         try {
             userService.deleteUserById(userId);
-            return HttpStatus.OK.toString();
+            return "User deleted successfully";
         } catch (Exception e) {
-            e.printStackTrace();
-            return HttpStatus.NOT_FOUND.toString();
+            return "User not found";
         }
     }
 }

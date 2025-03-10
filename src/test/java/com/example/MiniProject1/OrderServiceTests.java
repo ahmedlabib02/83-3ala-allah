@@ -29,50 +29,45 @@
 //    @Autowired
 //    private ObjectMapper objectMapper;
 //
-//
-//
 //    @BeforeEach
 //    public void overRideAll() {
 //        try {
-////            objectMapper.writeValue(new File(userDataPath), new ArrayList<User>());
-////            objectMapper.writeValue(new File(productDataPath), new ArrayList<Product>());
 //            objectMapper.writeValue(new File(orderDataPath), new ArrayList<Order>());
-////            objectMapper.writeValue(new File(cartDataPath), new ArrayList<Cart>());
 //        } catch (IOException e) {
 //            throw new RuntimeException("Failed to write to JSON file", e);
 //        }
 //    }
 //
+//    public Order addOrder(Order order) {
+//        try {
+//            File file = new File(orderDataPath);
+//            ArrayList<Order> orders;
+//            if (!file.exists()) {
+//                orders = new ArrayList<>();
+//            } else {
+//                orders = new ArrayList<>(Arrays.asList(objectMapper.readValue(file, Order[].class)));
+//            }
+//            orders.add(order);
+//            objectMapper.writeValue(file, orders);
+//            return order;
+//        } catch (IOException e) {
+//            throw new RuntimeException("Failed to write to JSON file", e);
+//        }
+//    }
 //
-//    public Order addOrder(Order order){
-//          try{
-//                   File file = new File(orderDataPath);
-//                   ArrayList<Order> orders;
-//                   if (!file.exists()) {
-//                  orders = new ArrayList<>();
-//                   }
-//                   else {
-//                  orders = new ArrayList<>(Arrays.asList(objectMapper.readValue(file, Order[].class)));
-//                   }
-//                   orders.add(order);
-//                   objectMapper.writeValue(file, orders);
-//                   return order;
-//             } catch (IOException e) {
-//                   throw new RuntimeException("Failed to write to JSON file", e);
-//          }
-//     }
+//    public ArrayList<Order> getOrders() {
+//        try {
+//            File file = new File(orderDataPath);
+//            if (!file.exists()) {
+//                return new ArrayList<>();
+//            }
+//            return new ArrayList<Order>(Arrays.asList(objectMapper.readValue(file, Order[].class)));
+//        } catch (IOException e) {
+//            throw new RuntimeException("Failed to read from JSON file", e);
+//        }
+//    }
 //
-//     public ArrayList<Order> getOrders() {
-//          try {
-//               File file = new File(orderDataPath);
-//               if (!file.exists()) {
-//                 return new ArrayList<>();
-//               }
-//               return new ArrayList<Order>(Arrays.asList(objectMapper.readValue(file, Order[].class)));
-//          } catch (IOException e) {
-//               throw new RuntimeException("Failed to read from JSON file", e);
-//          }
-//     }
+//    // ---------------- Tests for addOrder() ----------------
 //
 //    // Test 1: Happy Path – Adding a valid order should cause it to appear in the JSON file.
 //    @Test
@@ -91,7 +86,7 @@
 //        assertTrue(found, "Order should be present in the JSON file after addOrder");
 //    }
 //
-//    // Test 2: Duplicate – Adding two orders with the same ID should produce two entries.
+//    // Test 2: Duplicate – Adding two orders with the same ID should produce only one entry.
 //    @Test
 //    void testAddOrder_Duplicate() {
 //        UUID orderId = UUID.randomUUID();
@@ -112,18 +107,17 @@
 //
 //        ArrayList<Order> orders = getOrders();
 //        long count = orders.stream().filter(o -> o.getId().equals(orderId)).count();
-//        assertEquals(1, count, "There should be one orders only no duplicates");
+//        assertEquals(1, count, "There should be only one order with the same ID, no duplicates allowed");
 //    }
 //
-//    // Test 3: Invalid Input – Passing null to addOrder should leave the file unchanged.
+//    // Test 3: Invalid Input – Passing null to addOrder should throw an IllegalArgumentException.
 //    @Test
 //    void testAddOrder_InvalidInput() {
-//        try {
+//        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
 //            orderService.addOrder(null);
-//        } catch (Exception e) {
-//            // If an exception is thrown, fail the test.
-//            fail("addOrder(null) should not throw an exception, but rather leave the file unchanged");
-//        }
+//        });
+//        // Optionally assert the exception message if defined, e.g.:
+//        // assertEquals("Order cannot be null", exception.getMessage());
 //        ArrayList<Order> orders = getOrders();
 //        assertEquals(0, orders.size(), "JSON file should remain empty when null is added");
 //    }
@@ -159,7 +153,7 @@
 //        assertTrue(orders.isEmpty(), "getOrders should return an empty list when no orders are added");
 //    }
 //
-//    // Test 3: After Deletion – After adding and then deleting an order, getOrders should return an empty list.
+//    // Test 3: After Deletion – After adding and then deleting orders, getOrders should return an empty list.
 //    @Test
 //    void testGetOrders_AfterDeletion() {
 //        Order order = new Order();
@@ -193,14 +187,15 @@
 //        assertEquals(orderId, retrieved.getId(), "Retrieved order ID should match");
 //    }
 //
-//    // Test 2: Non-Existent – Retrieving an order with a random ID should return null.
+//    // Test 2: Non-Existent – Retrieving an order with a random ID should throw an IllegalArgumentException.
 //    @Test
 //    void testGetOrderById_NonExistent() {
-//        Order retrieved = orderService.getOrderById(UUID.randomUUID());
-//        assertNull(retrieved, "Non-existent order should return null");
+//        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+//            orderService.getOrderById(UUID.randomUUID());
+//        });
 //    }
 //
-//    // Test 3: After Deletion – After deleting an order, getOrderById should return null.
+//    // Test 3: After Deletion – After deleting an order, getOrderById should throw an IllegalArgumentException.
 //    @Test
 //    void testGetOrderById_AfterDeletion() {
 //        Order order = new Order();
@@ -212,8 +207,9 @@
 //
 //        addOrder(order);
 //        overRideAll();
-//        Order retrieved = orderService.getOrderById(orderId);
-//        assertNull(retrieved, "Order should not be retrievable after deletion");
+//        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+//            orderService.getOrderById(orderId);
+//        });
 //    }
 //
 //    // ---------------- Tests for deleteOrderById(UUID orderId) ----------------
@@ -235,7 +231,6 @@
 //        orders.stream().filter(o -> o.getId().equals(orderId)).findAny().ifPresent(o -> {
 //            fail("Order should be deleted and not present in the JSON file");
 //        });
-//
 //    }
 //
 //    // Test 2: Non-Existent – Deleting a non-existent order should throw an IllegalArgumentException.
@@ -268,6 +263,6 @@
 //        orderService.deleteOrderById(order1.getId());
 //        ArrayList<Order> orders = getOrders();
 //        assertEquals(1, orders.size(), "Only one order should remain after deletion");
-//        assertEquals(order2.getId(), orders.getFirst().getId(), "The remaining order should be order2");
+//        assertEquals(order2.getId(), orders.get(0).getId(), "The remaining order should be order2");
 //    }
 //}
