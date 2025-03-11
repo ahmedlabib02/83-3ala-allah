@@ -66,7 +66,7 @@ public class UserController {
         try {
             return userService.getUserById(userId);
         } catch (Exception e) {
-            e.printStackTrace();
+
             return null;
         }
     }
@@ -82,7 +82,7 @@ public class UserController {
         try {
             return userService.getOrdersByUserById(userId);
         } catch (Exception e) {
-            e.printStackTrace();
+
             return null;
         }
     }
@@ -99,7 +99,7 @@ public class UserController {
             userService.addOrderToUser(userId);
             return "Order added successfully";
         } catch (Exception e) {
-            e.printStackTrace();
+
             return HttpStatus.NOT_FOUND.toString();
         }
     }
@@ -117,7 +117,7 @@ public class UserController {
             userService.removeOrderFromUser(userId, orderId);
             return "Order removed successfully";
         } catch (Exception e) {
-            e.printStackTrace();
+
             return HttpStatus.NOT_FOUND.toString();
         }
     }
@@ -134,7 +134,7 @@ public class UserController {
             userService.emptyCart(userId);
             return "Cart emptied successfully";
         } catch (Exception e) {
-            e.printStackTrace();
+
             return HttpStatus.NOT_FOUND.toString();
         }
     }
@@ -153,7 +153,7 @@ public class UserController {
             cartService.addProductToCart(userId, product);
             return HttpStatus.OK.toString();
         } catch (Exception e) {
-            e.printStackTrace();
+
             return HttpStatus.NOT_FOUND.toString();
         }
     }
