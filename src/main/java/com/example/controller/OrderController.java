@@ -40,7 +40,7 @@ public class OrderController {
             orderService.deleteOrderById(orderId);
             return "Order deleted successfully";
         } catch (IllegalArgumentException e) {
-            return e.getMessage();
+            return "Order not found";
         }
     }
 }

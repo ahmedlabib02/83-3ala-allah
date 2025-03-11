@@ -152,8 +152,8 @@ public class UserController {
             Product product = productService.getProductById(productId);
             cartService.addProductToCart(userId, product);
             return HttpStatus.OK.toString();
-        } catch (Exception e) {
-
+        }
+        catch (Exception e) {
             return HttpStatus.NOT_FOUND.toString();
         }
     }
@@ -172,7 +172,7 @@ public class UserController {
             cartService.deleteProductFromCart(userId, product);
             return "Product deleted from cart";
         } catch (Exception e) {
-            return "Cart is empty";
+            return e.getMessage();
         }
     }
 

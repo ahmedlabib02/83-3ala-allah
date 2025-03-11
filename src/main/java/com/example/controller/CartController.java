@@ -65,7 +65,7 @@ public class CartController {
     public String deleteCartById(@PathVariable UUID cartId){
         try{
             cartService.deleteCartById(cartId);
-            return "Cart deleted";
+            return "Cart deleted successfully";
         }
         catch (IllegalArgumentException e){
             return e.getMessage();

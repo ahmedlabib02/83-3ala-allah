@@ -60,9 +60,10 @@ public class CartService extends MainService<Cart> {
         }
 
         Cart cart = cartRepository.getCartById(cartId);
-        if (cart == null) {
-            throw new IllegalArgumentException("Cart not found");
-        }
+
+
+        if( cart==null || cart.getProducts().isEmpty() )
+            throw new IllegalArgumentException("Cart is empty");
 
         boolean exists = cart.getProducts().stream()
                 .anyMatch(p -> p.getId().equals(product.getId()));
