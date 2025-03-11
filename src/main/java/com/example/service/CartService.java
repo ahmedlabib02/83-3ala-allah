@@ -23,6 +23,8 @@ public class CartService extends MainService<Cart> {
     public Cart addCart(Cart cart){
         if(cart == null)
             throw  new IllegalArgumentException("Cart cannot be null");
+        if(cart.getId() == null)
+            cart.setId(UUID.randomUUID());
         return cartRepository.addCart(cart);
     }
 
