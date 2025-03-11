@@ -51,14 +51,29 @@ public class CartService extends MainService<Cart> {
         cartRepository.addProductToCart(cartId, product);
     }
 
-    public void deleteProductFromCart(UUID cartId, Product product){
-        Cart cart = cartRepository.getCartById(cartId);
-        if(cart == null)
-            throw new IllegalArgumentException("Cart not found");
-        if(product == null)
+    public void deleteProductFromCart(UUID cartId, Product product) {
+        if (cartId == null) {
+            throw new IllegalArgumentException("Cart ID cannot be null");
+        }
+        if (product == null) {
             throw new IllegalArgumentException("Product cannot be null");
-        cartRepository.deleteProductFromCart(cartId, product);
+        }
+
+        Cart cart = cartRepository.getCartById(cartId);
+        if (cart == null) {
+            throw new IllegalArgumentException("Cart not found");
+        }
+
+        boolean exists = cart.getProducts().stream()
+                .anyMatch(p -> p.getId().equals(product.getId()));
+
+        if (exists) {
+            cartRepository.deleteProductFromCart(cartId, product);
+        } else {
+            throw new IllegalArgumentException("Product not found in cart");
+        }
     }
+
 
     public void deleteCartById(UUID cartId){
         Cart cart = cartRepository.getCartById(cartId);

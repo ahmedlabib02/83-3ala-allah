@@ -46,11 +46,9 @@ public class ProductRepository extends MainRepository<Product> {
     public Product getProductById(UUID productId) {
         for(Product product : findAll()){
             if(product.getId().equals(productId)){
-                System.out.print("Product Found!");
                 return product;
             }
         }
-        System.out.print("No Product Found");
         return null;
     }
 
