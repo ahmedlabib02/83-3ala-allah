@@ -22,6 +22,7 @@ public abstract class MainRepository<T> {
     public MainRepository(){
 
     }
+
     public ArrayList<T> findAll() {
         try {
             File file = new File(getDataPath());
@@ -49,8 +50,6 @@ public abstract class MainRepository<T> {
         allData.add(data);
         saveAll(allData);
     }
-
-
 
     public void overrideData(ArrayList<T> data) {
         saveAll(data);
