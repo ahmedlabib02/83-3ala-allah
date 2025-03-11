@@ -35,7 +35,7 @@ public class CartRepository extends MainRepository<Cart> {
         return findAll();
     }
 
-    public Cart getCartById(UUID cartId){
+    public Cart getCartById(UUID cartId) {
         return findAll().stream()
                 .filter(cart -> cart.getId().equals(cartId))
                 .findFirst()
