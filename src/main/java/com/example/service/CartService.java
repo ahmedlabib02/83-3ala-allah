@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.model.Cart;
 import com.example.model.Product;
 import com.example.repository.CartRepository;
+import com.example.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,12 @@ import java.util.UUID;
 public class CartService extends MainService<Cart> {
 
     CartRepository cartRepository;
+    UserRepository userRepository;
 
     @Autowired
-    public CartService(CartRepository cartRepository){
+    public CartService(CartRepository cartRepository, UserRepository userRepository) {
         this.cartRepository = cartRepository;
+        this.userRepository = userRepository;
     }
 
     public Cart addCart(Cart cart){
@@ -40,10 +43,12 @@ public class CartService extends MainService<Cart> {
     }
 
     public Cart getCartByUserId(UUID userId){
-        Cart cart = cartRepository.getCartByUserId(userId);
-        if(cart == null)
-            throw new IllegalArgumentException("Cart not found");
-        return cart;
+
+        if(userRepository.getUserById(userId) == null)
+            throw new IllegalArgumentException("User not found");
+
+        return  cartRepository.getCartByUserId(userId);
+
     }
 
     public void addProductToCart(UUID cartId, Product product){

@@ -183,6 +183,7 @@ public class UserController {
                 // Create new user cart
                 cart = new Cart(UUID.randomUUID(), userId, products);
 
+
                 // Add the new cart to the repository
                 cartService.addCart(cart);
             }
@@ -217,7 +218,7 @@ public class UserController {
             try {
                 cart = cartService.getCartByUserId(userId);
             } catch (Exception e) {
-                return "User not found";
+                return "Cart is empty";
             }
 
             cartService.deleteProductFromCart(cart.getId(), product);
