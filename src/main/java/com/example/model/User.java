@@ -12,7 +12,9 @@ public class User {
     private String name;
     private List<Order> orders = new ArrayList<>();
 
-    public User() {}
+    public User() {
+        this.id = UUID.randomUUID();
+    }
 
     public User(String name, List<Order> orders) {
         this.id = UUID.randomUUID();

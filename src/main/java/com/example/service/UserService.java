@@ -37,7 +37,18 @@ public class UserService extends MainService<User> {
      */
     public User addUser(User user) {
         if (user != null) {
-            return userRepository.addUser(user);
+            if (userRepository.getUserById(user.getId()) != null) {
+                throw new IllegalArgumentException("user already exists");
+            } else {
+                // Add a cart to the new user
+                Cart cart = new Cart(UUID.randomUUID(), user.getId(), new ArrayList<>());
+
+                // Add cart to the repository
+                cartService.addCart(cart);
+
+                // Add new user to the repository
+                return userRepository.addUser(user);
+            }
         } else {
             throw new IllegalArgumentException("user is null");
         }
@@ -92,8 +103,14 @@ public class UserService extends MainService<User> {
             // Get cart of the user
             Cart cart = cartService.getCartByUserId(userId);
 
-            if (cart == null || cart.getProducts().isEmpty()) {
-                throw new IllegalStateException("Cart is empty or does not exist.");
+            // If user did not have a cart then create a cart for him/her
+            if (cart == null) {
+                cart = new Cart(UUID.randomUUID(), userId, new ArrayList<>());
+                cartService.addCart(cart);
+            }
+
+            if (cart.getProducts().isEmpty()) {
+                throw new IllegalStateException("Cart is empty");
             }
 
             // Calculate the total cost of products
@@ -123,6 +140,13 @@ public class UserService extends MainService<User> {
     public void emptyCart(UUID userId) {
         if (userRepository.getUserById(userId) != null) {
             Cart cart = cartService.getCartByUserId(userId);
+
+            // If user did not have a cart then create a cart for him/her
+            if (cart == null) {
+                cart = new Cart(UUID.randomUUID(), userId, new ArrayList<>());
+                cartService.addCart(cart);
+            }
+
             List<Product> products = cart.getProducts();
 
             for (Product product : products) {

@@ -18,8 +18,13 @@ public class OrderService extends MainService<Order> {
     }
 
     public void addOrder(Order order) {
-        if(order!=null && getOrderById(order.getId())==null)
-            orderRepository.addOrder(order);
+        if(order==null)
+            throw new IllegalArgumentException("Order cannot be null");
+        if(order.getId()==null)
+            throw new IllegalArgumentException("Order ID cannot be null");
+        if(orderRepository.getOrderById(order.getId())!=null)
+            throw new IllegalArgumentException("Order already exists");
+        orderRepository.addOrder(order);
     }
 
     public ArrayList<Order> getOrders() {
@@ -27,7 +32,10 @@ public class OrderService extends MainService<Order> {
     }
 
     public Order getOrderById(UUID orderId) {
-        return orderRepository.getOrderById(orderId);
+        Order order = orderRepository.getOrderById(orderId);
+        if(order==null)
+            throw new IllegalArgumentException("Order not found");
+        return order;
     }
 
     public void deleteOrderById(UUID orderId) throws IllegalArgumentException {
